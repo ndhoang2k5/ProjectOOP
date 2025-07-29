@@ -35,14 +35,6 @@ CREATE TABLE Members (
     Email VARCHAR(100)
 );
 
--- Tạo bảng Librarians
-CREATE TABLE Librarians (
-    LibrarianID INT PRIMARY KEY AUTO_INCREMENT,
-    FullName VARCHAR(100),
-    Username VARCHAR(50) UNIQUE,
-    Password VARCHAR(100),
-    Email VARCHAR(100)
-);
 
 -- Tạo bảng BorrowRecords (không dùng CURRENT_DATE)
 CREATE TABLE BorrowRecords (
@@ -64,4 +56,3 @@ ALTER TABLE BookAuthors
 ALTER TABLE BorrowRecords
     ADD CONSTRAINT FK_BorrowRecords_Member FOREIGN KEY (MemberID) REFERENCES Members(MemberID),
     ADD CONSTRAINT FK_BorrowRecords_Book FOREIGN KEY (BookID) REFERENCES Books(BookID),
-    ADD CONSTRAINT FK_BorrowRecords_Librarian FOREIGN KEY (LibrarianID) REFERENCES Librarians(LibrarianID);
