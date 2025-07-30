@@ -55,6 +55,24 @@ public class BookService {
         }
     }
 
-    
+    /** 
+     * Xóa một cuốn sách khỏi cơ sở dữ liệu
+     * @param bookId ID của cuốn sách cần xóa
+     */
+    public boolean deleteBook(int bookId) {
+        String sql = "DELETE FROM books WHERE book_id = ?";
 
+        try (Connection conn = DatabaseConnector.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, bookId);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

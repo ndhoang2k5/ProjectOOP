@@ -45,4 +45,21 @@ public class BookApi {
             ctx.status(500).result("Failed to add book");
         }
     };
+
+    /** 
+     * Xóa một cuốn sách khỏi cơ sở dữ liệu
+     * @param bookId ID của cuốn sách cần xóa
+     * @return true nếu xóa thành công, false nếu thất bại
+     */
+    public static handler deleteBook = ctx -> {
+        int bookId = Integer.parseInt(ctx.pathParam("bookId"));
+        BookService bookService = new BookService();
+
+        boolean isDeleted = bookService.deleteBook(bookId);
+        if (isDeleted) {
+            ctx.status(204).result("Book deleted successfully");
+        } else {
+            ctx.status(404).result("Book not found");
+        }
+    };
 }
