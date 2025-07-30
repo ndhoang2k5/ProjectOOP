@@ -51,7 +51,7 @@ public class BookApi {
      * @param bookId ID của cuốn sách cần xóa
      * @return true nếu xóa thành công, false nếu thất bại
      */
-    public static handler deleteBook = ctx -> {
+    public static Handler deleteBook = ctx -> {
         int bookId = Integer.parseInt(ctx.pathParam("bookId"));
         BookService bookService = new BookService();
 
