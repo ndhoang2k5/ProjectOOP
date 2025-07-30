@@ -64,4 +64,19 @@ public class StudentApi {
         }
     };
 
+    /**
+     * Lấy danh sách tất cả sinh viên
+     * @return danh sách sinh viên
+     */
+    public static Handler getAllStudents = ctx -> {
+        StudentService studentService = new StudentService();
+        List<Student> students = studentService.getAllStudents();
+
+        if (students != null && !students.isEmpty()) {
+            ctx.status(200).json(students);
+        } else {
+            ctx.status(404).result("No students found");
+        }
+    };
+
 }

@@ -55,6 +55,7 @@ public class StudentService {
             return false;
         }
     }
+
     /**
      * Xóa một sinh viên khỏi cơ sở dữ liệu
      * @param studentId ID của sinh viên cần xóa
@@ -74,6 +75,31 @@ public class StudentService {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * Lấy danh sách tất cả sinh viên
+     * @return danh sách các sinh viên
+     */
+    public List<Student> getAllStudents() {
+        List<Student> students = new ArrayList<>();
+        String sql = "SELECT * FROM students";
+
+        try (Connection conn = DatabaseConnector.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Student student = new Student();
+                student.setStudentId(rs.getString("student_id"));
+                student.setStudentName(rs.getString("student_name"));
+                student.setStudentEmail(rs.getString("student_email"));
+                students.add(student);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
