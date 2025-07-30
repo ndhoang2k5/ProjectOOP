@@ -75,4 +75,30 @@ public class BookService {
             return false;
         }
     }
+
+    /**
+     * Lấy danh sách tất cả các cuốn sách từ cơ sở dữ liệu
+     * @return danh sách các đối tượng Book
+     */
+    public List<Book> getAllBooks() {
+        List<Book> books = new ArrayList<>();
+        String sql = "SELECT * FROM books";
+
+        try (Connection conn = DatabaseConnector.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Book book = new Book();
+                book.setBookId(rs.getInt("book_id"));
+                book.setBookName(rs.getString("book_name"));
+                book.setBookQuantity(rs.getInt("book_quantity"));
+                books.add(book);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
 }

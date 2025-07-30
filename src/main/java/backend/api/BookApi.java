@@ -62,4 +62,19 @@ public class BookApi {
             ctx.status(404).result("Book not found");
         }
     };
+
+    /**
+     * Lấy danh sách tất cả các cuốn sách
+     * @return danh sách các cuốn sách
+     */
+    public static Handler getAllBooks = ctx -> {
+        BookService bookService = new BookService();
+        List<Book> books = bookService.getAllBooks();
+
+        if (books.isEmpty()) {
+            ctx.status(404).result("No books found");
+        } else {
+            ctx.json(books);
+        }
+    };
 }
