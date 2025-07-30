@@ -1,7 +1,7 @@
-package src.main.java.backend.service;
+package backend.service;
 
-import src.main.java.backend.driver.DatabaseConnector;
-import src.main.java.backend.entities.Borrow;
+import backend.driver.DatabaseConnector;
+import backend.entities.Borrow;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

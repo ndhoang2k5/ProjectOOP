@@ -1,8 +1,8 @@
 // File: backend/service/StudentService.java
-package src.main.java.backend.service;
+package backend.service;
 
-import src.main.java.backend.driver.DatabaseConnector;
-import src.main.java.backend.entities.Student;
+import backend.driver.DatabaseConnector;
+import backend.entities.Student;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package src.main.java.backend.api;
+package backend.api;
 
 public class StudentApi {
     

@@ -1,4 +1,4 @@
-package src.main.java.backend.entities;
+package backend.entities;
 
 public class Book {
     public int bookId;

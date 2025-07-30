@@ -1,11 +1,20 @@
-package src.main.java.backend.api;
+package backend.api;
 
-import src.main.java.backend.entities.Book;
-import src.main.java.backend.service.BookService;
+import backend.entities.Book;
+import backend.service.BookService;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import io.javalin.Javalin;
+import io.javalin.http.Handler;
 
 public class BookApi {
+    /**
+     * api lấy tất cả sách
+     * @return danh sách sách
+     */
+    private static List<String> books = new ArrayList<>();
+    public static void getAllBooks() {
+    }
     
 }
