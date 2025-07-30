@@ -32,5 +32,28 @@ public class StudentService {
             return false;
         }
     }
+
+    /** 
+     * Thêm một sinh viên mới vào cơ sở dữ liệu
+     * @param student đối tượng Student chứa thông tin sinh viên mới
+     * @return true nếu thêm thành công, false nếu thất bại
+     */
+    public boolean addStudent(Student student) {
+        String sql = "INSERT INTO students (student_name, student_email) VALUES (?, ?)";
+
+        try (Connection conn = DatabaseConnector.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, student.getStudentName());
+            stmt.setString(2, student.getStudentEmail());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
 

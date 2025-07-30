@@ -29,4 +29,21 @@ public class StudentApi {
             ctx.status(404).result("Student not found");
         }
     };
+
+    /** 
+     * Thêm một sinh viên mới vào cơ sở dữ liệu
+     * @param student đối tượng Student chứa thông tin sinh viên mới
+     * @return true nếu thêm thành công, false nếu thất bại
+     */
+    public static Handler addStudent = ctx -> {
+        Student student = ctx.bodyAsClass(Student.class);
+        StudentService studentService = new StudentService();
+
+        boolean isAdded = studentService.addStudent(student);
+        if (isAdded) {
+            ctx.status(201).json(student);  // trả về đối tượng Student đã thêm
+        } else {
+            ctx.status(500).result("Failed to add student");
+        }
+    };
 }
