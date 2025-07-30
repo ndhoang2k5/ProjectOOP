@@ -29,4 +29,20 @@ public class BookApi {
         }
     };
 
+    /** 
+     * thêm một cuốn sách mới vào cơ sử dữ liệu
+     * @param book đối tượng Book chứa thông tin cuốn sách mới
+     * @return true nếu thêm thành công, false nếu thất bại
+     */
+    public static Handler addBook = ctx -> {
+        Book book = ctx.bodyAsClass(Book.class);
+        BookService bookService = new BookService();
+
+        boolean isAdded = bookService.addBook(book);
+        if (isAdded) {
+            ctx.status(201).json(book);  // trả về đối tượng Book đã thêm
+        } else {
+            ctx.status(500).result("Failed to add book");
+        }
+    };
 }
