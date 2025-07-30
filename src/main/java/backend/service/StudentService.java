@@ -55,5 +55,26 @@ public class StudentService {
             return false;
         }
     }
+    /**
+     * Xóa một sinh viên khỏi cơ sở dữ liệu
+     * @param studentId ID của sinh viên cần xóa
+     * @return true nếu xóa thành công, false nếu thất bại
+     */
+    public boolean deleteStudent(int studentId) {
+        String sql = "DELETE FROM students WHERE student_id = ?";
+
+        try (Connection conn = DatabaseConnector.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, studentId);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
 

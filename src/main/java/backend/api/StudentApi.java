@@ -46,4 +46,22 @@ public class StudentApi {
             ctx.status(500).result("Failed to add student");
         }
     };
+
+    /**
+     * Xóa một sinh viên khỏi cơ sở dữ liệu
+     * @param studentId ID của sinh viên cần xóa
+     * @return true nếu xóa thành công, false nếu thất bại
+     */
+    public static Handler deleteStudent = ctx -> {
+        int studentId = Integer.parseInt(ctx.pathParam("studentId"));
+        StudentService studentService = new StudentService();
+
+        boolean isDeleted = studentService.deleteStudent(studentId);
+        if (isDeleted) {
+            ctx.status(204).result("Student deleted successfully");
+        } else {
+            ctx.status(404).result("Student not found");
+        }
+    };
+
 }
