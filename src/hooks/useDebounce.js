@@ -1,9 +1,9 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Sidebar from './components/layout/Sidebar';
-import BooksPage from './features/books/BooksPage';
-import StudentsPage from './features/students/StudentsPage';
-import BorrowingPage from './features/borrowing/BorrowingPage';
+import Sidebar from '../components/layout/Sidebar';
+import BooksPage from '../features/books/BooksPage';
+import StudentsPage from '../features/students/StudentsPage';
+import BorrowingPage from '../features/borrowing/BorrowingPage';
 
 function App() {
   return (
