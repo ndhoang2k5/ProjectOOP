@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import BorrowingForm from './components/BorrowingForm';
 import ReturnForm from './components/ReturnForm';
-import * as api from '../../services/mockApi';
+import * as api from '../../service/mockApi';
 
 function BorrowingPage() {
   const [message, setMessage] = useState({ text: '', type: '' });

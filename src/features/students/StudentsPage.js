@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import StudentStatusCard from './components/StudentStatusCard';
 import StudentForm from './components/StudentForm';
 import StudentSearch from './components/StudentSearch';
-import * as api from '../../services/mockApi';
+import * as api from '../../service/mockApi';
 
 function StudentsPage() {
   const [status, setStatus] = useState(null);
