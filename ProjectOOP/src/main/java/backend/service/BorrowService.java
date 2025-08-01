@@ -28,4 +28,22 @@ public class BorrowService {
             return false;
         }
     }
+
+    /** 
+     * Xóa một bản ghi mượn sách 
+     * @param recordId ID của bản ghi mượn sách cần xóa
+     * @return true nếu xóa thành công, false nếu thất bại
+     */
+    public boolean deleteBorrowRecord(int recordId) {
+        String sql = "DELETE FROM borrows WHERE borrow_id = ?";
+        try (Connection conn = DatabaseConnector.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, recordId);
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

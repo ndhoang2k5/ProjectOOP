@@ -24,4 +24,20 @@ public class BorrowApi {
             ctx.status(500).result("Failed to create borrow record");
         }
     };
+
+    /** 
+     * Xóa một bản ghi mượn sách
+     * @param recordId ID của bản ghi mượn sách cần xóa
+     * @return true nếu xóa thành công, false nếu thất bại
+     */
+    public static Handler deleteBorrowRecord = ctx -> {
+        int recordId = Integer.parseInt(ctx.pathParam("recordId"));
+        BorrowService borrowService = new BorrowService();
+        boolean isDeleted = borrowService.deleteBorrowRecord(recordId);
+        if (isDeleted) {
+            ctx.status(204).result("Borrow record deleted successfully");
+        } else {
+            ctx.status(404).result("Borrow record not found");
+        }
+    };
 }
