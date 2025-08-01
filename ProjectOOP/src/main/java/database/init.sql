@@ -2,6 +2,7 @@ create database if not exists library;
 use library;
 
 
+
 -- Tạo bảng Authors
 CREATE TABLE Authors (
     AuthorID INT PRIMARY KEY AUTO_INCREMENT,
@@ -9,50 +10,37 @@ CREATE TABLE Authors (
     Biography TEXT
 );
 
+
 -- Tạo bảng Books
 CREATE TABLE Books (
-    BookID INT PRIMARY KEY AUTO_INCREMENT,
-    Title VARCHAR(255) NOT NULL,
-    YearPublished YEAR,
-    Quantity INT DEFAULT 1,
-    Description TEXT
+    bookID INT PRIMARY KEY AUTO_INCREMENT,
+    bookName VARCHAR(255) NOT NULL,
+    bookQuantity INT NOT NULL
 );
 
 -- Tạo bảng BookAuthors
 CREATE TABLE BookAuthors (
-    BookID INT,
-    AuthorID INT,
-    PRIMARY KEY (BookID, AuthorID)
+    bookID int not null primary key,
+    bookName varchar(255) not null,
+    authorID int not null
 );
 
 -- Tạo bảng Members
-CREATE TABLE Members (
-    MemberID INT PRIMARY KEY AUTO_INCREMENT,
-    FullName VARCHAR(100) NOT NULL,
-    DateOfBirth DATE,
-    Address VARCHAR(255),
-    Phone VARCHAR(20),
-    Email VARCHAR(100)
+CREATE TABLE student (
+    studentID INT PRIMARY KEY AUTO_INCREMENT,
+    studentName VARCHAR(100) NOT NULL,
+    studentAge INT,
+    studentEmail VARCHAR(100) UNIQUE
 );
 
--- Tạo bảng Librarians
-CREATE TABLE Librarians (
-    LibrarianID INT PRIMARY KEY AUTO_INCREMENT,
-    FullName VARCHAR(100),
-    Username VARCHAR(50) UNIQUE,
-    Password VARCHAR(100),
-    Email VARCHAR(100)
-);
 
 -- Tạo bảng BorrowRecords (không dùng CURRENT_DATE)
 CREATE TABLE BorrowRecords (
-    RecordID INT PRIMARY KEY AUTO_INCREMENT,
-    MemberID INT,
-    BookID INT,
-    BorrowDate DATE,
-    DueDate DATE,
-    ReturnDate DATE,
-    LibrarianID INT
+    recordId INT PRIMARY KEY AUTO_INCREMENT,
+    studentId INT NOT NULL,
+    bookId INT NOT NULL,
+    borrowDate DATE NOT NULL,
+    returnDate DATE
 );
 
 -- Khóa ngoại cho BookAuthors
@@ -62,6 +50,5 @@ ALTER TABLE BookAuthors
 
 -- Khóa ngoại cho BorrowRecords
 ALTER TABLE BorrowRecords
-    ADD CONSTRAINT FK_BorrowRecords_Member FOREIGN KEY (MemberID) REFERENCES Members(MemberID),
-    ADD CONSTRAINT FK_BorrowRecords_Book FOREIGN KEY (BookID) REFERENCES Books(BookID),
-    ADD CONSTRAINT FK_BorrowRecords_Librarian FOREIGN KEY (LibrarianID) REFERENCES Librarians(LibrarianID);
+    ADD CONSTRAINT FK_BorrowRecords_Member FOREIGN KEY (studentID) REFERENCES student(studentID),
+    ADD CONSTRAINT FK_BorrowRecords_Book FOREIGN KEY (BookID) REFERENCES Books(BookID)
