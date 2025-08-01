@@ -5,16 +5,20 @@ public class Borrow {
     private int recordId;
     private int studentId;
     private int bookId;
+    private String borrowDate;
+    private String returnDate;
 
 
     public Borrow() {
         // Default constructor
     }
 
-    public Borrow(int recordId, int studentId, int bookId) {
+    public Borrow(int recordId, int studentId, int bookId, String borrowDate, String returnDate) {
         this.recordId = recordId;
         this.studentId = studentId;
         this.bookId = bookId;
+        this.borrowDate  = borrowDate;
+        this.returnDate = returnDate;
     }
 
     public int getRecordId() {
@@ -39,5 +43,21 @@ public class Borrow {
 
     public void setBookId(int bookId) {
         this.bookId = bookId;
+    }
+
+    public String getBorrowDate() {
+        return borrowDate;
+    }
+
+    public void setBorrowDate(String borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
     }
 }
