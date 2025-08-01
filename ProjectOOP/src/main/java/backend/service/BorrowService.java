@@ -46,4 +46,30 @@ public class BorrowService {
             return false;
         }
     }
+
+    /**
+     * Lấy một bản ghi mượn sách theo ID
+     * @param recordId ID của bản ghi mượn sách cần lấy
+     * @return đối tượng Borrow nếu tìm thấy, null nếu không tìm thấy
+     */
+    public Borrow getBorrowRecordById(int recordId) {
+        String sql = "SELECT * FROM borrows WHERE borrow_id = ?";
+        try (Connection conn = DatabaseConnector.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, recordId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Borrow(
+                    rs.getInt("borrow_id"),
+                    rs.getInt("student_id"),
+                    rs.getInt("book_id"),
+                    rs.getString("borrow_date"),
+                    rs.getString("return_date")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

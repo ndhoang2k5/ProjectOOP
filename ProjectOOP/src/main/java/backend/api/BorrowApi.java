@@ -40,4 +40,20 @@ public class BorrowApi {
             ctx.status(404).result("Borrow record not found");
         }
     };
+
+    /**
+     * lấy một bản ghi mượn sách theo ID
+     * @param recordId ID của bản ghi mượn sách cần lấy
+     * @return đối tượng Borrow nếu tìm thấy, null nếu không tìm thấy
+     */
+    public static Handler getBorrowRecordById = ctx -> {
+        int recordId = Integer.parseInt(ctx.pathParam("recordId"));
+        BorrowService borrowService = new BorrowService();
+        Borrow borrow = borrowService.getBorrowRecordById(recordId);
+        if (borrow != null) {
+            ctx.status(200).json(borrow);  // trả về đối tượng Borrow tìm thấy
+        } else {
+            ctx.status(404).result("Borrow record not found");
+        }
+    };
 }
