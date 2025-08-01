@@ -56,4 +56,22 @@ public class BorrowApi {
             ctx.status(404).result("Borrow record not found");
         }
     };
+
+    /**
+     * Chỉnh sửa một bản ghi dựa trên ID
+     * @param recordId ID của bản ghi cần chỉnh sửa
+     * @return true nếu chỉnh sửa thành công, false nếu thất bại
+     */
+    public static Handler updateBorrowRecord = ctx -> {
+        int recordId = Integer.parseInt(ctx.pathParam("recordId"));
+        BorrowService borrowService = new BorrowService();
+        Borrow updatedData = ctx.bodyAsClass(Borrow.class);
+        updatedData.setRecordId(recordId);
+        boolean isUpdated = borrowService.updateBorrowRecord(recordId, updatedData);
+        if (isUpdated) {
+            ctx.status(200).json(updatedData);  // trả về đối tượng Borrow đã sửa
+        } else {
+            ctx.status(404).result("Borrow record not found");
+        }
+    };
 }

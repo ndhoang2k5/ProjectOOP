@@ -72,4 +72,27 @@ public class BorrowService {
         }
         return null;
     }
+
+    /**
+     * Chỉnh sửa một bản ghi dựa trên ID
+     * @param recordId ID của bản ghi cần chỉnh sửa
+     * @param updatedBorrow đối tượng Borrow chứa thông tin cập nhật
+     * @return true nếu cập nhật thành công, false nếu thất bại
+     */
+    public boolean updateBorrowRecord(int recordId, Borrow updatedBorrow) {
+        String sql = "UPDATE borrows SET student_id = ?, book_id = ?, borrow_date = ?, return_date = ? WHERE borrow_id = ?";
+        try (Connection conn = DatabaseConnector.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, updatedBorrow.getStudentId());
+            pstmt.setInt(2, updatedBorrow.getBookId());
+            pstmt.setString(3, updatedBorrow.getBorrowDate());
+            pstmt.setString(4, updatedBorrow.getReturnDate());
+            pstmt.setInt(5, recordId);
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
