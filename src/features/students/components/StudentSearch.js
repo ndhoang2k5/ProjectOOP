@@ -9,7 +9,7 @@ function StudentSearch({ onSearch }) {
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
-        <Input placeholder="Nhập mã sinh viên (VD: SV001)" value={studentId} onChange={(e) => setStudentId(e.target.value)} />
+        <Input placeholder="Nhập mã sinh viên (VD: 2xxxxxxx)" value={studentId} onChange={(e) => setStudentId(e.target.value)} />
         <Button type="submit">Tìm</Button>
       </div>
     </form>

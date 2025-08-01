@@ -3,11 +3,13 @@ let mockBooks = [
   { id: 1, title: 'Lập trình Java cơ bản', author: 'John Doe', isbn: '978-1', quantityInStock: 5 },
   { id: 2, title: 'Cấu trúc dữ liệu và giải thuật', author: 'Jane Smith', isbn: '978-2', quantityInStock: 3 },
   { id: 3, title: 'ReactJS cho người mới bắt đầu', author: 'Peter Pan', isbn: '978-3', quantityInStock: 0 },
+  { id: 4, title: '5 lời dạy của thầy đôn', author: 'Thầy Đôn Làn', isbn: '978-4', quantityInStock: 10 }
 ];
 
 let mockStudents = [
-  { id: 1, studentId: 'SV001', name: 'Nguyễn Văn A' },
-  { id: 2, studentId: 'SV002', name: 'Trần Thị B' },
+  { id: 1, studentId: '23020363', name: 'Vi Minh Hiển' },
+  { id: 2, studentId: '23020403', name: 'Hoàng Ngọc Nam' },
+  { id: 3, studentId: '23020368', name: 'Nguyễn Duy Hoàng'}
 ];
 
 let mockBorrowings = [];
@@ -25,7 +27,7 @@ export const searchBooks = async (query) => {
   if (!query) {
     return [...mockBooks];
   }
-  const lowerCaseQuery = query.toLowerCase();
+  const lowerCaseQuery = typeof query === 'string' ? query.toLowerCase(): ' ';
   return mockBooks.filter(
     book => book.title.toLowerCase().includes(lowerCaseQuery) || book.author.toLowerCase().includes(lowerCaseQuery)
   );

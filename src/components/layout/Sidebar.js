@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 function Sidebar() {
   return (
     <aside className="sidebar">
-      <h1>Thư viện</h1>
+      <h1>Quản lý thư viện</h1>
       <nav>
         <ul>
           <li><NavLink to="/books">Quản lý Sách</NavLink></li>
