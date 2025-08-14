@@ -14,14 +14,13 @@ public class BookService {
      * @param book đối tượng Book chứa thông tin mới
      */
     public boolean updateBook(int bookId, Book book) {
-        String sql = "UPDATE books SET book_name = ?, book_quantity = ? WHERE book_id = ?";
+        String sql = "UPDATE books SET bookName = ?, bookQuantity = ? WHERE bookId = ?";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, book.getBookName());
             stmt.setInt(2, book.getBookQuantity());
-            stmt.setInt(3, bookId);
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -38,13 +37,14 @@ public class BookService {
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public boolean addBook(Book book) {
-        String sql = "INSERT INTO books (book_name, book_quantity) VALUES (?, ?)";
+        String sql = "INSERT INTO books (bookId, bookName, bookQuantity) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, book.getBookName());
-            stmt.setInt(2, book.getBookQuantity());
+            stmt.setInt(1, book.getBookId());
+            stmt.setString(2, book.getBookName());
+            stmt.setInt(3, book.getBookQuantity());
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -90,9 +90,9 @@ public class BookService {
 
             while (rs.next()) {
                 Book book = new Book();
-                book.setBookId(rs.getInt("book_id"));
-                book.setBookName(rs.getString("book_name"));
-                book.setBookQuantity(rs.getInt("book_quantity"));
+                book.setBookId(rs.getInt("bookId"));
+                book.setBookName(rs.getString("bookName"));
+                book.setBookQuantity(rs.getInt("bookQuantity"));
                 books.add(book);
             }
 
