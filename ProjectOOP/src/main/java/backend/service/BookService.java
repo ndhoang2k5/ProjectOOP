@@ -101,4 +101,29 @@ public class BookService {
         }
         return books;
     }
+
+    /**
+     * Tìm một cuốn sách bằng tên
+     * @param bookName Tên của cuốn sách cần tìm
+     * @return danh sách các đối tượng Book khớp với tên
+     */
+    public List<Book> findBookByName(String bookName) {
+        List<Book> books = new ArrayList<>();
+        String sql = "SELECT * FROM books WHERE bookName LIKE ?";
+        try (Connection conn = DatabaseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + bookName + "%");
+            ResultSet rs = stmt.executeQuery(); 
+            while (rs.next()) {
+                Book book = new Book();
+                book.setBookId(rs.getInt("bookId"));
+                book.setBookName(rs.getString("bookName"));
+                book.setBookQuantity(rs.getInt("bookQuantity"));
+                books.add(book);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
 }

@@ -77,4 +77,20 @@ public class BookApi {
             ctx.json(books);
         }
     };
+
+    /**
+     * Tìm một cuốn sách bằng tên
+     * @param bookName Tên của cuốn sách cần tìm
+     * @return danh sách các cuốn sách có tên tương ứng
+     */
+    public static Handler findBookByName = ctx -> {
+        String bookName = ctx.queryParam("bookName");
+        BookService bookService = new BookService();
+        List<Book> books = bookService.findBookByName(bookName);
+        if (books.isEmpty()) {
+            ctx.status(404).result("No books found with the name: " + bookName);
+        } else {
+            ctx.json(books);
+        }
+    };
 }
