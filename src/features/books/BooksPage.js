@@ -39,7 +39,7 @@ function BooksPage() {
         <BookSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       </div>
       <div className="card">
-        <h3>Danh sách sách trong kho</h3>
+        <h3>Danh sách </h3>
         <BookList books={books} loading={loading} />
       </div>
       <div className="card">

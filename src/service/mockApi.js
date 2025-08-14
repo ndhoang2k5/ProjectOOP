@@ -27,7 +27,7 @@ export const searchBooks = async (query) => {
   if (!query) {
     return [...mockBooks];
   }
-  const lowerCaseQuery = typeof query === 'string' ? query.toLowerCase(): ' ';
+  const lowerCaseQuery = typeof query === 'string' ? query.toLowerCase(): '';
   return mockBooks.filter(
     book => book.title.toLowerCase().includes(lowerCaseQuery) || book.author.toLowerCase().includes(lowerCaseQuery)
   );
