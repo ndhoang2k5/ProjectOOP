@@ -2,11 +2,9 @@ package backend.driver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import backend.api.BookApi;
-import backend.driver.DatabaseConnector;
 
+import backend.api.BookApi;
 import io.javalin.Javalin;
 
 public class DatabaseConnector {
@@ -31,12 +29,22 @@ public class DatabaseConnector {
 
     public static void main(String[] args) {
         Javalin app = Javalin.create(config -> {
-            config.http.defaultContentType = "application/json"; // cú pháp mới
-        }).start(7000);
+            // Set default Content-Type
+            config.http.defaultContentType = "application/json";
 
+            // Bật CORS cho tất cả origin (Javalin 6.x)
+            config.bundledPlugins.enableCors(cors -> {
+                cors.addRule(it -> it.anyHost()); // Cho phép mọi domain
+            });
+        });
+
+        // Định nghĩa các API endpoint
         app.get("/books", BookApi.getAllBooks);
         app.post("/books/add/{bookId}/{bookName}/{bookQuantity}", BookApi.addBook);
         app.put("/books/{bookId}", BookApi.updateBook);
         app.delete("/books/{bookId}", BookApi.deleteBook);
+
+        // Chạy server
+        app.start(7000);
     }
 }
