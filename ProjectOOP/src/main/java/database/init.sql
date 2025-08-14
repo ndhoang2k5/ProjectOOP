@@ -1,31 +1,28 @@
-create database if not exists lib;
-use lib;
+CREATE DATABASE IF NOT EXISTS lib;
+USE lib;
 
-
-
--- Tạo bảng Authors
+-- 1. Authors
 CREATE TABLE Authors (
     AuthorID INT PRIMARY KEY AUTO_INCREMENT,
     AuthorName VARCHAR(100) NOT NULL,
     Biography TEXT
 );
 
-
--- Tạo bảng Books
+-- 2. Books
 CREATE TABLE Books (
     bookID INT PRIMARY KEY AUTO_INCREMENT,
     bookName VARCHAR(255) NOT NULL,
-    bookQuantity INT NOT NULL
+    bookQuantity INT NOT NULL CHECK (bookQuantity >= 0)
 );
 
--- Tạo bảng BookAuthors
+-- 3. BookAuthors (bảng trung gian)
 CREATE TABLE BookAuthors (
-    bookID int not null primary key,
-    bookName varchar(255) not null,
-    authorID int not null
+    bookID INT NOT NULL,
+    authorID INT NOT NULL,
+    PRIMARY KEY (bookID, authorID)
 );
 
--- Tạo bảng Members
+-- 4. Students
 CREATE TABLE student (
     studentID INT PRIMARY KEY AUTO_INCREMENT,
     studentName VARCHAR(100) NOT NULL,
@@ -33,8 +30,7 @@ CREATE TABLE student (
     studentEmail VARCHAR(100) UNIQUE
 );
 
-
--- Tạo bảng BorrowRecords (không dùng CURRENT_DATE)
+-- 5. BorrowRecords
 CREATE TABLE BorrowRecords (
     recordId INT PRIMARY KEY AUTO_INCREMENT,
     studentId INT NOT NULL,
@@ -43,12 +39,20 @@ CREATE TABLE BorrowRecords (
     returnDate DATE
 );
 
--- Khóa ngoại cho BookAuthors
-ALTER TABLE BookAuthors
-    ADD CONSTRAINT FK_BookAuthors_Book FOREIGN KEY (BookID) REFERENCES Books(BookID),
-    ADD CONSTRAINT FK_BookAuthors_Author FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID);
+-- =====================================
+-- Thêm khóa ngoại (FOREIGN KEY) sau
+-- =====================================
 
--- Khóa ngoại cho BorrowRecords
+-- Liên kết BookAuthors -> Books & Authors
+ALTER TABLE BookAuthors
+    ADD CONSTRAINT FK_BookAuthors_Book
+        FOREIGN KEY (bookID) REFERENCES Books(bookID),
+    ADD CONSTRAINT FK_BookAuthors_Author
+        FOREIGN KEY (authorID) REFERENCES Authors(AuthorID);
+
+-- Liên kết BorrowRecords -> student & Books
 ALTER TABLE BorrowRecords
-    ADD CONSTRAINT FK_BorrowRecords_Member FOREIGN KEY (studentID) REFERENCES student(studentID),
-    ADD CONSTRAINT FK_BorrowRecords_Book FOREIGN KEY (BookID) REFERENCES Books(BookID)
+    ADD CONSTRAINT FK_BorrowRecords_Student
+        FOREIGN KEY (studentID) REFERENCES student(studentID),
+    ADD CONSTRAINT FK_BorrowRecords_Book
+        FOREIGN KEY (bookID) REFERENCES Books(bookID);
