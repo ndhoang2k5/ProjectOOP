@@ -15,7 +15,7 @@ public class StudentApi {
      * @param studentId ID của sinh viên cần cập nhật
      * @return true nếu cập nhật thành công, false nếu thất bại
      */
-    public static Handler upadateStudent = ctx -> {
+    public static Handler updateStudent = ctx -> {
         int studentId = Integer.parseInt(ctx.pathParam("studentId"));
         StudentService studentService = new StudentService();
 
