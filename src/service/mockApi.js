@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Backend của bạn không có tiền tố "/api"
 const API_BASE_URL = 'http://localhost:7000';
 
 const handleError = (error) => {
