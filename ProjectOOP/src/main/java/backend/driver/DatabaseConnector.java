@@ -55,6 +55,7 @@ public class DatabaseConnector {
         app.post("/students/add/{studentId}/{studentName}/{studentEmail}", StudentApi.addStudent);
         app.put("/students/{studentId}", StudentApi.updateStudent);
         app.delete("/students/{studentId}", StudentApi.deleteStudent);
+        app.get("/student/{name}", StudentApi.searchStudentByName);
 
         // Định nghĩa api của borrow
         app.get("/borrows", BorrowApi.getBorrowRecordById);

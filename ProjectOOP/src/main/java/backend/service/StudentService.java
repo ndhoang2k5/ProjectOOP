@@ -103,5 +103,30 @@ public class StudentService {
         }
         return students;
     }
+
+    /**
+     * Tìm kiếm 1 học sinh theo tên
+     * @param studentName Tên của sinh viên cần tìm kiếm
+     * @return Danh sách sinh viên có tên trùng khớp
+     */
+    public List<Student> searchStudentByName(String studentName) {
+        List<Student> students = new ArrayList<>();
+        String sql = "SELECT * FROM students WHERE student_name LIKE ?";
+        try (Connection conn = DatabaseConnector.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + studentName + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Student student = new Student();
+                student.setStudentId(rs.getString("student_id"));
+                student.setStudentName(rs.getString("student_name"));
+                student.setStudentEmail(rs.getString("student_email"));
+                students.add(student);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
 }
 

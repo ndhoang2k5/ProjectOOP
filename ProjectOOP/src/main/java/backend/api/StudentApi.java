@@ -79,4 +79,19 @@ public class StudentApi {
         }
     };
 
+    /**
+     * tìm kiếm học sinh theo tên
+     * @param name tên học sinh cần tìm kiếm
+     * @return danh sách học sinh phù hợp với tên tìm kiếm
+     */
+    public static Handler searchStudentByName = ctx -> {
+        String name = ctx.queryParam("name");
+        StudentService studentService = new StudentService();
+        List<Student> students = studentService.searchStudentByName(name); 
+        if (students != null && !students.isEmpty()) {
+            ctx.status(200).json(students);
+        } else {
+            ctx.status(404).result("No students found with the name: " + name);
+        }
+    };
 }
