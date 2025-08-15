@@ -5,6 +5,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import backend.api.BookApi;
+import backend.api.BorrowApi;
+import backend.api.StudentApi;
+import backend.entities.Book;
+import backend.entities.Borrow;
+import backend.entities.Student;
 import io.javalin.Javalin;
 
 public class DatabaseConnector {
@@ -43,6 +48,19 @@ public class DatabaseConnector {
         app.post("/books/add/{bookId}/{bookName}/{bookQuantity}", BookApi.addBook);
         app.put("/books/{bookId}", BookApi.updateBook);
         app.delete("/books/{bookId}", BookApi.deleteBook);
+
+
+        // Định nghĩa api của student
+        app.get("/students", StudentApi.getAllStudents);
+        app.post("/students/add/{studentId}/{studentName}/{studentEmail}", StudentApi.addStudent);
+        app.put("/students/{studentId}", StudentApi.updateStudent);
+        app.delete("/students/{studentId}", StudentApi.deleteStudent);
+
+        // Định nghĩa api của borrow
+        app.get("/borrows", BorrowApi.getBorrowRecordById);
+        app.post("/borrows/add/{recordId}/{studentId}/{bookId}/{borrowDate}/{returnDate}", BorrowApi.createBorrowRecord);
+        app.put("/borrows/{recordId}", BorrowApi.updateBorrowRecord);
+        app.delete("/borrows/{recordId}", BorrowApi.deleteBorrowRecord);
 
         // Chạy server
         app.start(7000);
