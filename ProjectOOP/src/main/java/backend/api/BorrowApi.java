@@ -5,6 +5,8 @@ import backend.service.BorrowService;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import io.javalin.Javalin;
 import io.javalin.http.Handler;
 
@@ -15,15 +17,34 @@ public class BorrowApi {
      * @return true nếu tạo thành công, false nếu thất bại
      */
     public static Handler createBorrowRecord = ctx -> {
-        Borrow borrow = ctx.bodyAsClass(Borrow.class);
-        BorrowService borrowService = new BorrowService();
-        boolean isCreated = borrowService.createBorrowRecord(borrow);
-        if (isCreated) {
-            ctx.status(201).json(borrow);  // trả về đối tượng Borrow đã tạo
-        } else {
-            ctx.status(500).result("Failed to create borrow record");
+        try {
+            // Parse dữ liệu JSON từ request body sang object Borrow
+            Borrow borrow = ctx.bodyAsClass(Borrow.class);
+
+            BorrowService borrowService = new BorrowService();
+            boolean isCreated = borrowService.createBorrowRecord(borrow);
+
+            if (isCreated) {
+                ctx.status(201).json(Map.of(
+                    "success", true,
+                    "message", "Tạo bản ghi mượn sách thành công",
+                    "data", borrow
+                ));
+            } else {
+                ctx.status(400).json(Map.of(
+                    "success", false,
+                    "message", "Không thể tạo bản ghi mượn sách (có thể do sách đã hết)"
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.status(500).json(Map.of(
+                "success", false,
+                "message", "Lỗi server khi tạo bản ghi mượn sách"
+            ));
         }
     };
+
 
     /** 
      * Xóa một bản ghi mượn sách
@@ -41,6 +62,8 @@ public class BorrowApi {
         }
     };
 
+
+
     /**
      * lấy một bản ghi mượn sách theo ID
      * @param recordId ID của bản ghi mượn sách cần lấy
@@ -57,6 +80,8 @@ public class BorrowApi {
         }
     };
 
+
+    
     /**
      * Chỉnh sửa một bản ghi dựa trên ID
      * @param recordId ID của bản ghi cần chỉnh sửa

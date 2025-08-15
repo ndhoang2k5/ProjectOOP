@@ -7,22 +7,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BorrowService {
-    /**
-     * tạo một bản ghi mượn sách mới
+     /**
+     * Tạo một bản ghi mượn sách mới và giảm số lượng sách trong kho
      * @param borrow đối tượng Borrow chứa thông tin mượn sách
-     * @return true nếu tạo thành công, false nếu thất bại
+     * @return true nếu thành công, false nếu thất bại
      */
     public boolean createBorrowRecord(Borrow borrow) {
-        String sql = "INSERT INTO borrows (borrow_id, student_id, book_id, borrow_date, return_date) VALUES (?,?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnector.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, borrow.getRecordId());
-            pstmt.setInt(2, borrow.getStudentId());
-            pstmt.setInt(3, borrow.getBookId());
-            pstmt.setString(4, borrow.getBorrowDate());
-            pstmt.setString(5, borrow.getReturnDate());
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
+        String insertBorrowSql = 
+            "INSERT INTO borrows (borrow_id, student_id, book_id, borrow_date, return_date) VALUES (?, ?, ?, ?, ?)";
+        String updateBookSql = 
+            "UPDATE books SET bookQuantity = bookQuantity - 1 WHERE bookId = ? AND bookQuantity > 0";
+
+        try (Connection conn = DatabaseConnector.getConnection()) {
+            conn.setAutoCommit(false);
+
+            // 1. Thêm bản ghi mượn
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertBorrowSql)) {
+                insertStmt.setInt(1, borrow.getRecordId());
+                insertStmt.setInt(2, borrow.getStudentId());
+                insertStmt.setInt(3, borrow.getBookId());
+                insertStmt.setString(4, borrow.getBorrowDate());
+                insertStmt.setString(5, borrow.getReturnDate());
+                int borrowInserted = insertStmt.executeUpdate();
+
+                if (borrowInserted == 0) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // 2. Giảm số lượng sách
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateBookSql)) {
+                updateStmt.setInt(1, borrow.getBookId());
+                int bookUpdated = updateStmt.executeUpdate();
+
+                if (bookUpdated == 0) { // Không còn sách để mượn
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // 3. Commit nếu cả hai bước thành công
+            conn.commit();
+            return true;
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
