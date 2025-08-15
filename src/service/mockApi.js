@@ -1,106 +1,123 @@
-// --- Dữ liệu giả lập (Mock Data) ---
-let mockBooks = [
-  { id: 1, title: 'Lập trình Java cơ bản', author: 'John Doe', isbn: '978-1', quantityInStock: 5 },
-  { id: 2, title: 'Cấu trúc dữ liệu và giải thuật', author: 'Jane Smith', isbn: '978-2', quantityInStock: 3 },
-  { id: 3, title: 'ReactJS cho người mới bắt đầu', author: 'Peter Pan', isbn: '978-3', quantityInStock: 0 },
-  { id: 4, title: '5 lời dạy của thầy đôn', author: 'Thầy Đôn Làn', isbn: '978-4', quantityInStock: 10 }
-];
+import axios from 'axios';
 
-let mockStudents = [
-  { id: 1, studentId: '23020363', name: 'Vi Minh Hiển' },
-  { id: 2, studentId: '23020403', name: 'Hoàng Ngọc Nam' },
-  { id: 3, studentId: '23020368', name: 'Nguyễn Duy Hoàng'}
-];
+// Backend của bạn không có tiền tố "/api"
+const API_BASE_URL = 'http://localhost:7000';
 
-let mockBorrowings = [];
+const handleError = (error) => {
+  console.error("Lỗi API:", error);
+  if (error.response) {
+    throw new Error(error.response.data.message || 'Lỗi từ server');
+  }
+  throw new Error('Không thể kết nối tới server.');
+};
 
-let nextBookId = 4;
-let nextStudentId = 3;
-let nextBorrowingId = 1;
+// ===================================================================
+// --- API CHO SÁCH (Hoạt động với hạn chế) ---
+// ===================================================================
 
-// Hàm chờ mô phỏng độ trễ mạng
-const delay = (ms) => new Promise(res => setTimeout(res, ms));
-
-// USECASE: In ra thông tin sách, tìm kiếm sách trong kho
+/**
+ * Lấy danh sách sách từ `GET /books`.
+ * Hạn chế: Backend chưa hỗ trợ tìm kiếm, nên chức năng search sẽ không lọc.
+ */
 export const searchBooks = async (query) => {
-  await delay(300);
-  if (!query) {
-    return [...mockBooks];
+  try {
+    const response = await axios.get(`${API_BASE_URL}/books`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 404) return [];
+    handleError(error);
   }
-  const lowerCaseQuery = typeof query === 'string' ? query.toLowerCase(): '';
-  return mockBooks.filter(
-    book => book.title.toLowerCase().includes(lowerCaseQuery) || book.author.toLowerCase().includes(lowerCaseQuery)
-  );
 };
 
-// USECASE: Thêm sách
+/**
+ * Thêm sách bằng cách gọi `POST /books/add/{id}/{name}/{qty}`.
+ * Hạn chế: Sách thêm vào sẽ thiếu author, isbn và có ID tạm thời.
+ */
 export const addBook = async (bookData) => {
-  await delay(300);
-  const newBook = { ...bookData, id: nextBookId++ };
-  mockBooks.push(newBook);
-  return newBook;
-};
-
-// USECASE: Tìm kiếm thông tin sinh viên và tình trạng mượn sách
-export const getStudentStatus = async (studentId) => {
-  await delay(300);
-  const student = mockStudents.find(s => s.studentId === studentId);
-  if (!student) {
-    throw new Error('Không tìm thấy sinh viên');
+  const tempId = Date.now();
+  const bookName = bookData.title;
+  const bookQuantity = bookData.quantityInStock;
+  const encodedBookName = encodeURIComponent(bookName);
+  const url = `${API_BASE_URL}/books/add/${tempId}/${encodedBookName}/${bookQuantity}`;
+  try {
+    const response = await axios.post(url, {});
+    return response.data;
+  } catch (error) {
+    handleError(error);
   }
-  const activeBorrows = mockBorrowings
-    .filter(b => b.studentId === student.id && b.returnDate === null)
-    .map(b => {
-      const book = mockBooks.find(bk => bk.id === b.bookId);
-      return { ...b, bookTitle: book ? book.title : 'Không rõ' };
-    });
-  return { student, activeBorrows };
 };
 
-// USECASE: Thêm sinh viên
+
+// ===================================================================
+// --- API CHO SINH VIÊN (Hoạt động một phần) ---
+// ===================================================================
+
+/**
+ * Thêm sinh viên mới.
+ * Hạn chế: Backend chỉ lưu `student_name` và `student_email`.
+ * Mã sinh viên (`studentId`) mà người dùng nhập vào form sẽ bị MẤT.
+ */
 export const addStudent = async (studentData) => {
-  await delay(300);
-  if (mockStudents.some(s => s.studentId === studentData.studentId)) {
-    throw new Error('Mã sinh viên đã tồn tại');
+  try {
+    // `studentData` từ form có: { name, studentId }
+    // `StudentService.addStudent` lưu: `student_name`, `student_email`
+    const payload = {
+      studentName: studentData.name,
+      studentEmail: null // Form không có email, nên ta gửi null
+    };
+    // Backend không đăng ký API này trong DatabaseConnector!
+    // GIẢ SỬ bạn đã thêm: app.post("/students", StudentApi.addStudent);
+    const response = await axios.post(`${API_BASE_URL}/students`, payload);
+    return response.data;
+  } catch (error) {
+    // Nếu bạn chưa đăng ký API, lỗi sẽ xảy ra ở đây
+    alert('Lỗi: API thêm sinh viên chưa được đăng ký trong DatabaseConnector.java');
+    handleError(error);
   }
-  const newStudent = { ...studentData, id: nextStudentId++ };
-  mockStudents.push(newStudent);
-  return newStudent;
-}
-
-// USECASE: Tạo mượn sách
-export const createBorrowing = async (studentId, bookId) => {
-  await delay(500);
-  const student = mockStudents.find(s => s.studentId === studentId);
-  const book = mockBooks.find(b => b.id === bookId);
-
-  if (!student) throw new Error('Không tìm thấy sinh viên.');
-  if (!book) throw new Error('Không tìm thấy sách.');
-  if (book.quantityInStock <= 0) throw new Error('Sách đã hết trong kho.');
-
-  book.quantityInStock -= 1;
-  const newBorrowing = {
-    id: nextBorrowingId++,
-    studentId: student.id,
-    bookId: book.id,
-    borrowDate: new Date().toISOString().slice(0, 10),
-    returnDate: null
-  };
-  mockBorrowings.push(newBorrowing);
-  return newBorrowing;
 };
 
-// USECASE: Kết thúc mượn sách
-export const endBorrowing = async (borrowingId) => {
-  await delay(500);
-  const borrowing = mockBorrowings.find(b => b.id === borrowingId);
-  if (!borrowing) throw new Error('Không tìm thấy lượt mượn.');
-  if (borrowing.returnDate) throw new Error('Sách này đã được trả.');
+/**
+ * Lấy trạng thái sinh viên.
+ * Hạn chế LỚN: Backend không có API `getStudentStatus`.
+ * GIẢI PHÁP THAY THẾ: Lấy TẤT CẢ sinh viên về rồi lọc ở frontend.
+ * Cách này rất chậm và không thể lấy sách đang mượn.
+ */
+export const getStudentStatus = async (studentIdToFind) => {
+  try {
+    // GIẢ SỬ bạn đã thêm: app.get("/students", StudentApi.getAllStudents);
+    const response = await axios.get(`${API_BASE_URL}/students`);
+    const allStudents = response.data;
 
-  const book = mockBooks.find(b => b.id === borrowing.bookId);
-  if (book) {
-    book.quantityInStock += 1;
+    // Tìm sinh viên trong danh sách trả về
+    const foundStudent = allStudents.find(s => s.studentId === studentIdToFind);
+
+    if (!foundStudent) {
+      throw new Error('Không tìm thấy sinh viên');
+    }
+
+    // Vì không thể lấy sách đang mượn, ta trả về mảng rỗng
+    return {
+      student: foundStudent,
+      activeBorrows: []
+    };
+  } catch (error) {
+    alert('Lỗi: API lấy tất cả sinh viên chưa được đăng ký trong DatabaseConnector.java');
+    handleError(error);
   }
-  borrowing.returnDate = new Date().toISOString().slice(0, 10);
-  return borrowing;
 };
+
+
+// ===================================================================
+// --- API CHO MƯỢN/TRẢ SÁCH (Hoàn toàn không hoạt động) ---
+// ===================================================================
+
+const notImplemented = (featureName) => {
+  const message = `Chức năng "${featureName}" không thể hoạt động. ` +
+                  `Backend chưa đăng ký API cho nó trong file DatabaseConnector.java.`;
+  console.error(message);
+  alert(message);
+  throw new Error(message);
+};
+
+export const createBorrowing = async () => notImplemented("Tạo phiếu mượn");
+export const endBorrowing = async () => notImplemented("Trả sách");

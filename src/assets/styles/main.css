@@ -1,5 +1,5 @@
 body {
-  font-family: 'Orbitron', 'Courier New', monospace; /* Phông chữ cyberpunk */
+  font-family: 'Sans-serif', 'Arial', sans-serif; 
   background: url('/public/photo-1600585154340-be6161a56a0c.avif') no-repeat center center fixed;
   background-size: cover;
   margin: 0;
@@ -8,11 +8,11 @@ body {
 .app-container { display: flex; }
 .sidebar {
   width: 220px;
-  background: linear-gradient(135deg, #0d0d1e, #1a1a2e); /* Gradient tối hơn cho cyberpunk */
-  color: #00ffcc; /* Neon xanh */
+  background: ; 
+  color: #f4fbfa;
   height: 100vh;
   padding: 20px 0;
-  box-shadow: 5px 0 20px rgba(0, 255, 204, 0.5); /* Bóng neon đậm hơn */
+  box-shadow: 5px 0 20px rgba(244, 245, 245, 0.5); 
   position: relative; /* Để thêm hiệu ứng */
   overflow: hidden; /* Ẩn tràn nếu có animation */
 }
