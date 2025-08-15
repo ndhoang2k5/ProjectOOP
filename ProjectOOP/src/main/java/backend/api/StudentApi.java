@@ -36,14 +36,13 @@ public class StudentApi {
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public static Handler addStudent = ctx -> {
-        Student student = ctx.bodyAsClass(Student.class);
         StudentService studentService = new StudentService();
-
-        boolean isAdded = studentService.addStudent(student);
+        Student newStudent = ctx.bodyAsClass(Student.class);
+        boolean isAdded = studentService.addStudent(newStudent);
         if (isAdded) {
-            ctx.status(201).json(student);  // trả về đối tượng Student đã thêm
+            ctx.status(201).json(newStudent);  // trả về đối tượng Student đã thêm
         } else {
-            ctx.status(500).result("Failed to add student");
+            ctx.status(400).result("Failed to add student");
         }
     };
 

@@ -39,13 +39,15 @@ public class StudentService {
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public boolean addStudent(Student student) {
-        String sql = "INSERT INTO students (student_name, student_email) VALUES (?, ?)";
+        String sql = "INSERT INTO students (student_name, student_age, student_id, student_email) VALUES (?, ?)";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, student.getStudentName());
-            stmt.setString(2, student.getStudentEmail());
+            stmt.setInt(2, student.getStudentAge());
+            stmt.setString(3, student.getStudentId());
+            stmt.setString(4, student.getStudentEmail());
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
