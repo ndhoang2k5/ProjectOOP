@@ -132,6 +132,7 @@ table {
   margin-top: 15px;
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid #00ffcc;
+  min-height: 0; /* Đảm bảo không có chiều cao tối thiểu */
 }
 th, td {
   border-bottom: 1px solid #00ffcc;
@@ -152,4 +153,23 @@ th {
   color: #40ff40;
   font-weight: bold;
   text-shadow: 0 0 6px rgba(64, 255, 64, 0.8); /* Bóng xanh lá neon */
+}
+
+/* Hiệu ứng thu gọn */
+.collapse-wrapper {
+  transition: all 0.5s ease-in-out;
+}
+.collapse-wrapper.collapsed {
+  height: 0;
+  overflow: hidden;
+  display: none; /* Ép ẩn hoàn toàn */
+.collapse-wrapper:not(.collapsed) {
+  height: auto;
+  display: block;
+}
+
+/* Đảm bảo nội dung không vượt ra ngoài */
+.card .collapse-wrapper > * {
+  margin: 0;
+  padding: 0;
 }

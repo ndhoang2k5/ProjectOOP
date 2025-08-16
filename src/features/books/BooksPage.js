@@ -10,6 +10,7 @@ function BooksPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [isCollapsed, setIsCollapsed] = useState(false); // State thu gọn
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -26,8 +27,8 @@ function BooksPage() {
     alert('Thêm sách thành công!');
     setSearchTerm(''); // Reset search để tải lại toàn bộ danh sách
     if (debouncedSearchTerm === '') { // Nếu đang không search thì trigger useEffect
-         const results = await api.searchBooks('');
-         setBooks(results);
+      const results = await api.searchBooks('');
+      setBooks(results);
     }
   };
 
@@ -39,8 +40,18 @@ function BooksPage() {
         <BookSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       </div>
       <div className="card">
-        <h3>Danh sách </h3>
-        <BookList books={books} loading={loading} />
+        <h3>Danh sách</h3>
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="btn mb-4"
+        >
+          {isCollapsed ? 'Mở rộng danh sách' : 'Thu gọn danh sách'}
+        </button>
+        <div className={`collapse-wrapper ${isCollapsed ? 'collapsed' : ''}`}>
+          <div className="p-2">
+            <BookList books={books} loading={loading} />
+          </div>
+        </div>
       </div>
       <div className="card">
         <h3>Thêm sách mới</h3>
@@ -49,4 +60,5 @@ function BooksPage() {
     </div>
   );
 }
+
 export default BooksPage;
