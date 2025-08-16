@@ -42,12 +42,10 @@ export const searchBooks = async (query) => {
  * [GIỮ NGUYÊN TÊN HÀM]
  */
 export const addBook = async (bookData) => {
-  const tempId = Date.now();
-  const bookName = encodeURIComponent(bookData.title);
-  const bookQuantity = bookData.quantityInStock;
-  const url = `${API_BASE_URL}/books/add/${tempId}/${bookName}/${bookQuantity}`;
   try {
-    const response = await axios.post(url, {});
+    // Gửi yêu cầu POST đến `/api/books` (hoặc `/books` nếu bạn không dùng /api)
+    // Toàn bộ thông tin sách nằm trong body của request dưới dạng JSON
+    const response = await axios.post(`${API_BASE_URL}/books`, bookData);
     return response.data;
   } catch (error) {
     handleError(error, "thêm sách");
