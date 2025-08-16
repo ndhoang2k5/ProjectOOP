@@ -3,6 +3,7 @@ package backend.entities;
 public class Book {
     private int bookId;
     private String bookName;
+    private String author;  // Thêm trường tác giả
     private int bookQuantity;   
 
     public Book() {
@@ -37,5 +38,13 @@ public class Book {
 
     public void setBookQuantity(int bookQuantity) {
         this.bookQuantity = bookQuantity;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }
