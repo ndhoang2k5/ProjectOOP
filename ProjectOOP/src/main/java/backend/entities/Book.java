@@ -3,16 +3,17 @@ package backend.entities;
 public class Book {
     private int bookId;
     private String bookName;
-    private String author;  // Thêm trường tác giả
+    private String author;
     private int bookQuantity;   
 
     public Book() {
         // Default constructor
     }
 
-    public Book(int bookId, String bookName, int bookQuantity) {
+    public Book(int bookId, String bookName, String author, int bookQuantity) {
         this.bookId = bookId;
         this.bookName = bookName;
+        this.author = author;
         this.bookQuantity = bookQuantity;
     }
 
