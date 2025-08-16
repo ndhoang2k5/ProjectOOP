@@ -16,14 +16,15 @@ public class StudentService {
      */
     public boolean updateStudent(int studentId, Student student) {
         // Sửa tên bảng từ "students" thành "student" và tên cột
-        String sql = "UPDATE student SET studentName = ?, studentEmail = ? WHERE studentID = ?";
+        String sql = "UPDATE student SET studentName = ?, studentAge = ?,  studentEmail = ? WHERE studentID = ?";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, student.getStudentName());
-            stmt.setString(2, student.getStudentEmail());
-            stmt.setInt(3, studentId);
+            stmt.setInt(2, student.getStudentAge());
+            stmt.setString(3, student.getStudentEmail());
+            stmt.setInt(4, studentId);
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
