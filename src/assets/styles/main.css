@@ -5,7 +5,7 @@ body {
   margin: 0;
   color: #e0e0e0; /* Màu chữ sáng trên nền tối */
 }
-.app-container { display: flex; }
+.app-container { display: flex ; }
 .sidebar {
   width: 220px;
   background: "";
@@ -155,21 +155,27 @@ th {
   text-shadow: 0 0 6px rgba(64, 255, 64, 0.8); /* Bóng xanh lá neon */
 }
 
-/* Hiệu ứng thu gọn */
-.collapse-wrapper {
-  transition: all 0.5s ease-in-out;
-}
-.collapse-wrapper.collapsed {
-  height: 0;
-  overflow: hidden;
-  display: none; /* Ép ẩn hoàn toàn */
-.collapse-wrapper:not(.collapsed) {
-  height: auto;
-  display: block;
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px; /* Tạo khoảng cách với bảng sách */
+  gap: 15px;
 }
 
-/* Đảm bảo nội dung không vượt ra ngoài */
-.card .collapse-wrapper > * {
-  margin: 0;
-  padding: 0;
+.pagination-info {
+  font-weight: bold;
+  font-size: 16px;
+  color: #00ffcc; /* Dùng màu xanh neon đồng bộ */
+  text-shadow: 0 0 6px rgba(0, 255, 204, 0.7);
+}
+
+/* Thêm style cho nút bị vô hiệu hóa */
+.btn:disabled {
+  background-color: #555;
+  color: #999;
+  cursor: not-allowed;
+  text-shadow: none;
+  box-shadow: none;
+  border-color: #555;
 }
