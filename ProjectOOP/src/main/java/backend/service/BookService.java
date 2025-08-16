@@ -91,6 +91,7 @@ public class BookService {
                 Book book = new Book();
                 book.setBookId(rs.getInt("bookId"));
                 book.setBookName(rs.getString("bookName"));
+                book.setAuthor(rs.getString("author"));
                 book.setBookQuantity(rs.getInt("bookQuantity"));
                 books.add(book);
             }
