@@ -7,7 +7,7 @@ function StudentStatusCard({ status, error }) {
   return (
     <div>
       <h4>Thông tin sinh viên</h4>
-      <p><strong>Mã SV:</strong> {status.student.studentId} - <strong>Tên:</strong> {status.student.name}</p>
+      <p><strong>Mã SV:</strong> {status.student.studentId} - <strong>Tên:</strong> {status.student.studentName}</p>
       <h4>Sách đang mượn ({status.activeBorrows.length}):</h4>
       {status.activeBorrows.length > 0 ? (
         <ul>
@@ -19,4 +19,5 @@ function StudentStatusCard({ status, error }) {
     </div>
   );
 }
+
 export default StudentStatusCard;
