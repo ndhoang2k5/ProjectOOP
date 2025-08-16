@@ -1,10 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import logo from '../../assets/images/logo.jpg'; // Đường dẫn đến ảnh, thay đổi theo cấu trúc thư mục của bạn
 
 function Sidebar() {
   return (
     <aside className="sidebar">
-      <h1>Quản lý thư viện</h1>
+      <div className="sidebar-logo">
+        <img src={logo} alt="Library Logo" className="logo-img" />
+        <h1>Quản lý thư viện</h1>
+      </div>
       <nav>
         <ul>
           <li><NavLink to="/books">Quản lý Sách</NavLink></li>
@@ -16,5 +20,4 @@ function Sidebar() {
   );
 }
 
-// Chỉ có một export default duy nhất trong file này
 export default Sidebar;
