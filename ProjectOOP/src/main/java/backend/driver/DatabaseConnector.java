@@ -40,30 +40,17 @@ import io.javalin.Javalin;
             });
         });
 
-        // === API SÁCH (giữ nguyên) ===
         app.get("/books", BookApi.getAllBooks);
-        app.post("/books/add/{bookId}/{bookName}/{bookQuantity}", BookApi.addBook);
+        app.post("/books/add/{bookId}/{bookName}/{author}/{bookQuantity}", BookApi.addBook);
         app.put("/books/{bookId}", BookApi.updateBook);
         app.delete("/books/{bookId}", BookApi.deleteBook);
 
-        // === API SINH VIÊN (SỬA LẠI HOÀN TOÀN) ===
-        // Lấy tất cả sinh viên
+
         app.get("/students", StudentApi.getAllStudents);
-
-        // Lấy một sinh viên theo ID (API mới để phục vụ chức năng tìm kiếm)
         app.get("/students/{studentId}", StudentApi.getStudentById);
-
-        // Thêm một sinh viên mới (Sửa lại đường dẫn)
         app.post("/students", StudentApi.addStudent);
-
-        // Cập nhật sinh viên theo ID
         app.put("/students/{studentId}", StudentApi.updateStudent);
-
-        // Xóa sinh viên theo ID
         app.delete("/students/{studentId}", StudentApi.deleteStudent);
-
-        // Tìm kiếm sinh viên theo tên (giữ lại nếu bạn cần)
-        // Đường dẫn được đổi để tránh trùng lặp với get by ID
         app.get("/students/search/{name}", StudentApi.searchStudentByName);
 
 
