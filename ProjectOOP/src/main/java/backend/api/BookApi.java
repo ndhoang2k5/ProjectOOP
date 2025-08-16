@@ -42,7 +42,7 @@ public class BookApi {
         if (isAdded) {
             ctx.status(201).json(book);  // trả về đối tượng Book đã thêm
         } else {
-            ctx.status(500).result("Failed to add book");
+            ctx.status(400).result("Failed to add book");
         }
     };
 
