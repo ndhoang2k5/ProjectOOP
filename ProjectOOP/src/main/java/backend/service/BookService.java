@@ -14,13 +14,14 @@ public class BookService {
      * @param book đối tượng Book chứa thông tin mới
      */
     public boolean updateBook(int bookId, Book book) {
-        String sql = "UPDATE books SET bookName = ?, bookQuantity = ? WHERE bookId = ?";
+        String sql = "UPDATE books SET bookName = ?, bookQuantity = ?, author = ?  WHERE bookId = ?";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, book.getBookName());
             stmt.setInt(2, book.getBookQuantity());
+            stmt.setString(3, book.getAuthor());
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
