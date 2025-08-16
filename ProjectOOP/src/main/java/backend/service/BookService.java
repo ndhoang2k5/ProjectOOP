@@ -34,21 +34,20 @@ public class BookService {
     /**
      * Thêm một cuốn sách mới vào cơ sở dữ liệu
      * @param book đối tượng Book chứa thông tin cuốn sách mới
+     * @param author thêm tên tác của cuốn sách nếu cần
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public boolean addBook(Book book) {
-        String sql = "INSERT INTO books (bookId, bookName, bookQuantity) VALUES (?, ?, ?)";
-
+        String sql = "INSERT INTO books (bookId, bookName, author, bookQuantity) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setInt(1, book.getBookId());
             stmt.setString(2, book.getBookName());
-            stmt.setInt(3, book.getBookQuantity());
+            stmt.setString(3, book.getAuthor());
+            stmt.setInt(4, book.getBookQuantity());
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
