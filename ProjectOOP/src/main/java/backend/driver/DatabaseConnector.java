@@ -41,7 +41,7 @@ import io.javalin.Javalin;
         });
 
         app.get("/books", BookApi.getAllBooks);
-        app.post("/books/add/{bookId}/{bookName}/{author}/{bookQuantity}", BookApi.addBook);
+        app.post("/books", BookApi.addBook);
         app.put("/books/{bookId}", BookApi.updateBook);
         app.delete("/books/{bookId}", BookApi.deleteBook);
 
