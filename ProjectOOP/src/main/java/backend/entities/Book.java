@@ -1,9 +1,9 @@
 package backend.entities;
 
 public class Book {
-    public int bookId;
-    public String bookName;
-    public int bookQuantity;   
+    private int bookId;
+    private String bookName;
+    private int bookQuantity;   
 
     public Book() {
         // Default constructor
