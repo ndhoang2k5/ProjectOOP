@@ -3,14 +3,14 @@ package backend.entities;
 public class Student {
     private String studentName;
     private int studentAge;
-    private String studentId;
+    private int studentId; // Sửa từ String thành int
     private String studentEmail;
 
     public Student() {
         // Default constructor
     }
 
-    public Student(String name, int age, String studentId, String email) {
+    public Student(String name, int age, int studentId, String email) { // Sửa kiểu dữ liệu tham số
         this.studentName = name;
         this.studentAge = age;
         this.studentId = studentId;
@@ -33,11 +33,11 @@ public class Student {
         this.studentAge = studentAge;
     }
 
-    public String getStudentId() {
+    public int getStudentId() { // Sửa kiểu trả về
         return studentId;
     }
 
-    public void setStudentId(String studentId) {
+    public void setStudentId(int studentId) { // Sửa kiểu tham số
         this.studentId = studentId;
     }
 
@@ -48,5 +48,4 @@ public class Student {
     public void setStudentEmail(String studentEmail) {
         this.studentEmail = studentEmail;
     }
-
 }

@@ -2,29 +2,29 @@ package backend.api;
 
 import backend.entities.Student;
 import backend.service.StudentService;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import io.javalin.Javalin;
 import io.javalin.http.Handler;
+import java.util.List;
 
 public class StudentApi {
     
     /** 
      * Cập nhật thông tin của một sinh viên
-     * @param studentId ID của sinh viên cần cập nhật
-     * @return true nếu cập nhật thành công, false nếu thất bại
      */
     public static Handler updateStudent = ctx -> {
         int studentId = Integer.parseInt(ctx.pathParam("studentId"));
         StudentService studentService = new StudentService();
 
+        // Lấy dữ liệu mới từ body của request
         Student updatedData = ctx.bodyAsClass(Student.class);
-        updatedData.setStudentId(String.valueOf(studentId));
+        
+        // SỬA LỖI: Gán studentId (kiểu int) cho đối tượng.
+        // Dòng này đảm bảo đối tượng có ID chính xác trước khi trả về,
+        // mặc dù service layer chỉ cần giá trị int.
+        updatedData.setStudentId(studentId);
 
         boolean isUpdated = studentService.updateStudent(studentId, updatedData);
         if (isUpdated) {
-            ctx.status(200).json(updatedData);  // trả về đối tượng Student đã sửa
+            ctx.status(200).json(updatedData);  // Trả về đối tượng Student đã sửa
         } else {
             ctx.status(404).result("Student not found");
         }
@@ -32,15 +32,17 @@ public class StudentApi {
 
     /** 
      * Thêm một sinh viên mới vào cơ sở dữ liệu
-     * @param student đối tượng Student chứa thông tin sinh viên mới
-     * @return true nếu thêm thành công, false nếu thất bại
      */
     public static Handler addStudent = ctx -> {
         StudentService studentService = new StudentService();
         Student newStudent = ctx.bodyAsClass(Student.class);
+
+        // Lưu ý: Chúng ta không cần gán ID ở đây vì nó là AUTO_INCREMENT trong DB.
+        // Service layer đã được sửa để không chèn ID.
+
         boolean isAdded = studentService.addStudent(newStudent);
         if (isAdded) {
-            ctx.status(201).json(newStudent);  // trả về đối tượng Student đã thêm
+            ctx.status(201).json(newStudent);  // Trả về đối tượng Student đã thêm
         } else {
             ctx.status(400).result("Failed to add student");
         }
@@ -48,8 +50,6 @@ public class StudentApi {
 
     /**
      * Xóa một sinh viên khỏi cơ sở dữ liệu
-     * @param studentId ID của sinh viên cần xóa
-     * @return true nếu xóa thành công, false nếu thất bại
      */
     public static Handler deleteStudent = ctx -> {
         int studentId = Integer.parseInt(ctx.pathParam("studentId"));
@@ -57,7 +57,7 @@ public class StudentApi {
 
         boolean isDeleted = studentService.deleteStudent(studentId);
         if (isDeleted) {
-            ctx.status(204).result("Student deleted successfully");
+            ctx.status(204); // 204 No Content là mã trạng thái phù hợp cho việc xóa thành công
         } else {
             ctx.status(404).result("Student not found");
         }
@@ -65,32 +65,44 @@ public class StudentApi {
 
     /**
      * Lấy danh sách tất cả sinh viên
-     * @return danh sách sinh viên
      */
     public static Handler getAllStudents = ctx -> {
         StudentService studentService = new StudentService();
         List<Student> students = studentService.getAllStudents();
 
-        if (students != null && !students.isEmpty()) {
+        if (students != null) { // Không cần kiểm tra isEmpty, vì trả về mảng rỗng [] là hợp lệ
             ctx.status(200).json(students);
         } else {
-            ctx.status(404).result("No students found");
+            // Trường hợp này hiếm khi xảy ra trừ khi có lỗi SQL
+            ctx.status(500).result("Error retrieving students");
         }
     };
 
     /**
-     * tìm kiếm học sinh theo tên
-     * @param name tên học sinh cần tìm kiếm
-     * @return danh sách học sinh phù hợp với tên tìm kiếm
+     * Tìm kiếm học sinh theo tên
      */
     public static Handler searchStudentByName = ctx -> {
-        String name = ctx.queryParam("name");
+        // SỬA LỖI: Đổi từ queryParam thành pathParam để khớp với định nghĩa endpoint /student/{name}
+        String name = ctx.pathParam("name");
         StudentService studentService = new StudentService();
         List<Student> students = studentService.searchStudentByName(name); 
-        if (students != null && !students.isEmpty()) {
+        
+        if (students != null) {
             ctx.status(200).json(students);
         } else {
-            ctx.status(404).result("No students found with the name: " + name);
+             ctx.status(500).result("Error searching for students");
         }
+    };
+
+    public static Handler getStudentById = ctx -> {
+    int studentId = Integer.parseInt(ctx.pathParam("studentId"));
+    StudentService studentService = new StudentService();
+    Student student = studentService.getStudentById(studentId);
+
+    if (student != null) {
+        ctx.status(200).json(student);
+    } else {
+        ctx.status(404).result("Student not found with ID: " + studentId);
+    }
     };
 }
