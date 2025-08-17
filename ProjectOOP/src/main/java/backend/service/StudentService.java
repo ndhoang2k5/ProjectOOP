@@ -153,7 +153,7 @@ public class StudentService {
             
             if (rs.next()) {
                 Student student = new Student();
-                student.setStudentId(rs.getInt("studentID"));
+                student.setStudentId(rs.getInt("studentId"));
                 student.setStudentName(rs.getString("studentName"));
                 student.setStudentAge(rs.getInt("studentAge"));
                 student.setStudentEmail(rs.getString("studentEmail"));
