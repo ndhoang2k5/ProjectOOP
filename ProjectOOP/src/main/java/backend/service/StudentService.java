@@ -15,8 +15,7 @@ public class StudentService {
      * @param student đối tượng Student chứa thông tin mới
      */
     public boolean updateStudent(int studentId, Student student) {
-        // Sửa tên bảng từ "students" thành "student" và tên cột
-        String sql = "UPDATE student SET studentName = ?, studentAge = ?,  studentEmail = ? WHERE studentID = ?";
+        String sql = "UPDATE students SET studentName = ?, studentAge = ?,  studentEmail = ? WHERE studentID = ?";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -41,15 +40,15 @@ public class StudentService {
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public boolean addStudent(Student student) {
-        // Sửa tên bảng và loại bỏ cột studentID vì nó là AUTO_INCREMENT
-        String sql = "INSERT INTO student (studentName, studentAge, studentEmail) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO students (studentId, studentName, studentAge, studentEmail) VALUES (? ,?, ?, ?)";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, student.getStudentName());
-            stmt.setInt(2, student.getStudentAge());
-            stmt.setString(3, student.getStudentEmail());
+            stmt.setInt(1, student.getStudentId());
+            stmt.setString(2, student.getStudentName());
+            stmt.setInt(3, student.getStudentAge());
+            stmt.setString(4, student.getStudentEmail());
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -67,7 +66,7 @@ public class StudentService {
      */
     public boolean deleteStudent(int studentId) {
         // Sửa tên bảng và tên cột
-        String sql = "DELETE FROM student WHERE studentID = ?";
+        String sql = "DELETE FROM student WHERE studentId = ?";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -127,8 +126,7 @@ public class StudentService {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Student student = new Student();
-                // Sửa tên cột và sử dụng đúng phương thức getInt
-                student.setStudentId(rs.getInt("studentID"));
+                student.setStudentId(rs.getInt("studentId"));
                 student.setStudentName(rs.getString("studentName"));
                 student.setStudentAge(rs.getInt("studentAge"));
                 student.setStudentEmail(rs.getString("studentEmail"));
@@ -140,7 +138,7 @@ public class StudentService {
         return students;
     }
 
-        /**
+    /**
      * Lấy thông tin một sinh viên bằng ID
      * @param studentId ID của sinh viên cần tìm
      * @return đối tượng Student nếu tìm thấy, ngược lại trả về null
@@ -164,6 +162,6 @@ public class StudentService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Trả về null nếu không tìm thấy hoặc có lỗi
+        return null;
     }
 }

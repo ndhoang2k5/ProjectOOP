@@ -17,11 +17,7 @@ public class StudentApi {
         // Lấy dữ liệu mới từ body của request
         Student updatedData = ctx.bodyAsClass(Student.class);
         
-        // SỬA LỖI: Gán studentId (kiểu int) cho đối tượng.
-        // Dòng này đảm bảo đối tượng có ID chính xác trước khi trả về,
-        // mặc dù service layer chỉ cần giá trị int.
         updatedData.setStudentId(studentId);
-
         boolean isUpdated = studentService.updateStudent(studentId, updatedData);
         if (isUpdated) {
             ctx.status(200).json(updatedData);  // Trả về đối tượng Student đã sửa
@@ -95,14 +91,14 @@ public class StudentApi {
     };
 
     public static Handler getStudentById = ctx -> {
-    int studentId = Integer.parseInt(ctx.pathParam("studentId"));
-    StudentService studentService = new StudentService();
-    Student student = studentService.getStudentById(studentId);
+        int studentId = Integer.parseInt(ctx.pathParam("studentId"));
+        StudentService studentService = new StudentService();
+        Student student = studentService.getStudentById(studentId);
 
-    if (student != null) {
-        ctx.status(200).json(student);
-    } else {
-        ctx.status(404).result("Student not found with ID: " + studentId);
-    }
+        if (student != null) {
+            ctx.status(200).json(student);
+        } else {
+            ctx.status(404).result("Student not found with ID: " + studentId);
+        }
     };
 }

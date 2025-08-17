@@ -44,7 +44,7 @@ public class BookService {
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public boolean addBook(Book book) {
-        String sql = "INSERT INTO books (bookId, bookName, author, bookQuantity) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO books (bookID, bookName, author, bookQuantity) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, book.getBookId());
