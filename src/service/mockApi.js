@@ -85,7 +85,8 @@ export const getStudentStatus = async (studentId) => {
     };
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      alert(`Không tìm thấy sinh viên với mã: ${studentId}`);
+      // alert() đã bị loại bỏ, component sẽ tự xử lý thông báo
+      console.warn(`Không tìm thấy sinh viên với mã: ${studentId}`);
       return null;
     }
     handleError(error, `tìm sinh viên mã ${studentId}`);
@@ -93,20 +94,38 @@ export const getStudentStatus = async (studentId) => {
 };
 
 /**
- * [GIỮ NGUYÊN TÊN HÀM]
+ * Thêm một sinh viên mới.
+ * (ĐÂY LÀ PHIÊN BẢN ĐÚNG, CHỈ CÓ MỘT)
  */
 export const addStudent = async (studentData) => {
   try {
     const payload = {
+      studentId: parseInt(studentData.studentId, 10) || 0,
       studentName: studentData.name,
-      studentAge: studentData.age || 0,
+      studentAge: parseInt(studentData.age, 10) || 0,
       studentEmail: studentData.email || null
     };
     const response = await axios.post(`${API_BASE_URL}/students`, payload);
-    alert("Thêm sinh viên thành công!");
-    return response.data;
+    return response.data; // Không có alert ở đây
   } catch (error) {
     handleError(error, "thêm sinh viên");
+  }
+};
+
+/**
+ * Cập nhật thông tin của một sinh viên dựa trên ID.
+ */
+export const updateStudent = async (studentId, studentData) => {
+  try {
+    const payload = {
+      studentName: studentData.name,
+      studentAge: parseInt(studentData.age, 10),
+      studentEmail: studentData.email
+    };
+    const response = await axios.put(`${API_BASE_URL}/students/${studentId}`, payload);
+    return response.data; // Không có alert ở đây
+  } catch (error) {
+    handleError(error, `cập nhật sinh viên mã ${studentId}`);
   }
 };
 
@@ -115,23 +134,32 @@ export const addStudent = async (studentData) => {
 // --- API CHO MƯỢN/TRẢ SÁCH ---
 // ===================================================================
 
-/**
- * [THÊM LẠI HÀM BỊ THIẾU]
- * Thêm lại hàm này để không bị lỗi biên dịch.
- * Logic bên trong chỉ hiện thông báo vì backend chưa hỗ trợ.
- */
-export const createBorrowing = async () => {
-  const message = `Chức năng "Tạo phiếu mượn" chưa được cài đặt ở backend.`;
-  console.error(message);
-  alert(message);
+// ... (phần đầu file giữ nguyên) ...
+
+// ===================================================================
+// --- API CHO MƯỢN/TRẢ SÁCH ---
+// ===================================================================
+
+export const createBorrowing = async (studentId, bookId) => {
+  try {
+    const payload = {
+      studentId: parseInt(studentId, 10),
+      bookId: parseInt(bookId, 10),
+    };
+    // URL chuẩn: POST /borrows
+    const response = await axios.post(`${API_BASE_URL}/borrows`, payload);
+    return response.data;
+  } catch (error) {
+    handleError(error, "tạo phiếu mượn");
+  }
 };
 
-/**
- * [THÊM LẠI HÀM BỊ THIẾU]
- * Thêm lại hàm này để không bị lỗi biên dịch.
- */
-export const endBorrowing = async () => {
-  const message = `Chức năng "Trả sách" chưa được cài đặt ở backend.`;
-  console.error(message);
-  alert(message);
+export const returnBook = async (borrowingId) => {
+  try {
+    // URL chuẩn: PUT /borrows/{id}/return
+    const response = await axios.put(`${API_BASE_URL}/borrows/${borrowingId}/return`);
+    return response.data;
+  } catch (error) {
+    handleError(error, "trả sách");
+  }
 };
