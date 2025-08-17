@@ -65,7 +65,7 @@ public class BookService {
      * @param bookId ID của cuốn sách cần xóa
      */
     public boolean deleteBook(int bookId) {
-        String sql = "DELETE FROM books WHERE bookID = ?";
+        String sql = "DELETE FROM books WHERE bookId = ?";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
