@@ -52,6 +52,15 @@ export const addBook = async (bookData) => {
   }
 };
 
+export const deleteBook = async (bookId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/books/${bookId}`);
+    return response.data;
+  } catch (error) {
+    handleError(error, "xóa sách");
+  }
+};
+
 
 // ===================================================================
 // --- API CHO SINH VIÊN ---
