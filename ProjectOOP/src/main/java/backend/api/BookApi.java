@@ -1,16 +1,14 @@
 package backend.api;
 
+import java.util.List;
+
 import backend.entities.Book;
 import backend.service.BookService;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import io.javalin.Javalin;
 import io.javalin.http.Handler;
 
 public class BookApi {
     /**
-     * Cập nhật thông tin của một cuốn sách 
+     * Cập nhật thông tin của một cuốn sách. 
      * @param bookId ID của cuốn sách cần cập nhật
      * @return true nếu cập nhật thành công, false nếu thất bại
      */
@@ -30,7 +28,7 @@ public class BookApi {
     };
 
     /** 
-     * thêm một cuốn sách mới vào cơ sử dữ liệu
+     * thêm một cuốn sách mới vào cơ sử dữ liệu.
      * @param book đối tượng Book chứa thông tin cuốn sách mới
      * @return true nếu thêm thành công, false nếu thất bại
      */
@@ -47,7 +45,7 @@ public class BookApi {
     };
 
     /** 
-     * Xóa một cuốn sách khỏi cơ sở dữ liệu
+     * Xóa một cuốn sách khỏi cơ sở dữ liệu.
      * @param bookId ID của cuốn sách cần xóa
      * @return true nếu xóa thành công, false nếu thất bại
      */
@@ -64,7 +62,7 @@ public class BookApi {
     };
 
     /**
-     * Lấy danh sách tất cả các cuốn sách
+     * Lấy danh sách tất cả các cuốn sách.
      * @return danh sách các cuốn sách
      */
     public static Handler getAllBooks = ctx -> {
@@ -79,7 +77,7 @@ public class BookApi {
     };
 
     /**
-     * Tìm một cuốn sách bằng tên
+     * Tìm một cuốn sách bằng tên.
      * @param bookName Tên của cuốn sách cần tìm
      * @return danh sách các cuốn sách có tên tương ứng
      */

@@ -1,10 +1,15 @@
 package backend.service;
 
-import backend.driver.DatabaseConnector;
-import backend.entities.Book;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import backend.driver.DatabaseConnector;
+import backend.entities.Book;
 
 public class BookService {
 
@@ -60,7 +65,7 @@ public class BookService {
      * @param bookId ID của cuốn sách cần xóa
      */
     public boolean deleteBook(int bookId) {
-        String sql = "DELETE FROM books WHERE book_id = ?";
+        String sql = "DELETE FROM books WHERE bookId = ?";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {

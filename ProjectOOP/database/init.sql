@@ -25,8 +25,18 @@ CREATE TABLE BorrowRecords (
     bookId INT NOT NULL,
     borrowDate DATE NOT NULL,
     returnDate DATE,
-    CONSTRAINT FK_BorrowRecords_Student FOREIGN KEY (studentID) REFERENCES Students(studentID),
-    CONSTRAINT FK_BorrowRecords_Book FOREIGN KEY (bookID) REFERENCES Books(bookID)
+    
+    -- SỬA LẠI: Dùng đúng tên cột `studentId` (chữ d thường)
+    -- THÊM `ON DELETE CASCADE` cho Student
+    CONSTRAINT FK_BorrowRecords_Student 
+        FOREIGN KEY (studentId) REFERENCES Students(studentID)
+        ON DELETE CASCADE,
+    
+    -- SỬA LẠI: Dùng đúng tên cột `bookId` (chữ d thường)
+    -- THÊM `ON DELETE CASCADE` cho Book
+    CONSTRAINT FK_BorrowRecords_Book 
+        FOREIGN KEY (bookId) REFERENCES Books(bookID)
+        ON DELETE CASCADE
 );
 
 -- Insert dữ liệu vào Books
@@ -435,3 +445,5 @@ INSERT INTO BorrowRecords (studentId, bookId, borrowDate, returnDate) VALUES
 (99, 99, '2025-01-03', NULL),
 (100, 100, '2025-01-04', '2025-02-04'),
 (1, 1, '2025-01-05', '2025-02-05');
+
+select * from students;

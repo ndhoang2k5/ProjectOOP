@@ -7,15 +7,12 @@ import java.sql.SQLException;
 import backend.api.BookApi;
 import backend.api.BorrowApi;
 import backend.api.StudentApi;
-import backend.entities.Book;
-import backend.entities.Borrow;
-import backend.entities.Student;
 import io.javalin.Javalin;
 
     public class DatabaseConnector {
         private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/lib?useSSL=false&serverTimezone=UTC";
         private static final String JDBC_USER = "root";
-        private static final String JDBC_PASSWORD = "ngocnam2005";
+        private static final String JDBC_PASSWORD = "1109";
 
         static {
             try {
@@ -41,7 +38,7 @@ import io.javalin.Javalin;
         });
 
         app.get("/books", BookApi.getAllBooks);
-        app.post("/books/add/{bookId}/{bookName}/{author}/{bookQuantity}", BookApi.addBook);
+        app.post("/books", BookApi.addBook);
         app.put("/books/{bookId}", BookApi.updateBook);
         app.delete("/books/{bookId}", BookApi.deleteBook);
 
