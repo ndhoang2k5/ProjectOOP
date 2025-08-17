@@ -27,7 +27,7 @@ public class StudentService {
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
-
+            
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -66,7 +66,7 @@ public class StudentService {
      */
     public boolean deleteStudent(int studentId) {
         // Sửa tên bảng và tên cột
-        String sql = "DELETE FROM student WHERE studentId = ?";
+        String sql = "DELETE FROM students WHERE studentId = ?";
 
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -89,7 +89,7 @@ public class StudentService {
     public List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
         // Sửa tên bảng
-        String sql = "SELECT * FROM student";
+        String sql = "SELECT * FROM students";
 
         try (Connection conn = DatabaseConnector.getConnection();
             Statement stmt = conn.createStatement();
@@ -119,7 +119,7 @@ public class StudentService {
     public List<Student> searchStudentByName(String studentName) {
         List<Student> students = new ArrayList<>();
         // Sửa tên bảng và tên cột
-        String sql = "SELECT * FROM student WHERE studentName LIKE ?";
+        String sql = "SELECT * FROM students WHERE studentName LIKE ?";
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, "%" + studentName + "%");
@@ -144,7 +144,7 @@ public class StudentService {
      * @return đối tượng Student nếu tìm thấy, ngược lại trả về null
      */
     public Student getStudentById(int studentId) {
-        String sql = "SELECT * FROM student WHERE studentID = ?";
+        String sql = "SELECT * FROM students WHERE studentID = ?";
         try (Connection conn = DatabaseConnector.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
