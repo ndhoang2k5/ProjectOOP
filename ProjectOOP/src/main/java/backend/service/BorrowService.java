@@ -1,126 +1,143 @@
+// src/main/java/backend/service/BorrowService.java
 package backend.service;
 
 import backend.driver.DatabaseConnector;
 import backend.entities.Borrow;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 public class BorrowService {
-     /**
-     * Tạo một bản ghi mượn sách mới và giảm số lượng sách trong kho
-     * @param borrow đối tượng Borrow chứa thông tin mượn sách
-     * @return true nếu thành công, false nếu thất bại
-     */
-    public boolean createBorrowRecord(Borrow borrow) {
-        String insertBorrowSql = 
-            "INSERT INTO borrows (borrow_id, student_id, book_id, borrow_date, return_date) VALUES (?, ?, ?, ?, ?)";
-        String updateBookSql = 
-            "UPDATE books SET bookQuantity = bookQuantity - 1 WHERE bookId = ? AND bookQuantity > 0";
 
-        try (Connection conn = DatabaseConnector.getConnection()) {
+    /**
+     * SỬA LẠI HOÀN TOÀN:
+     * - Dùng đúng tên bảng/cột.
+     * - Trả về đối tượng Borrow.
+     * - Xử lý đúng AUTO_INCREMENT.
+     * - Thêm logic transaction an toàn.
+     */
+    public Borrow createBorrowRecord(Borrow borrow) {
+        String insertSql = "INSERT INTO BorrowRecords (studentId, bookId, borrowDate) VALUES (?, ?, ?)";
+        String updateSql = "UPDATE Books SET bookQuantity = bookQuantity - 1 WHERE bookID = ? AND bookQuantity > 0";
+        Connection conn = null;
+
+        try {
+            conn = DatabaseConnector.getConnection();
             conn.setAutoCommit(false);
 
-            // 1. Thêm bản ghi mượn
-            try (PreparedStatement insertStmt = conn.prepareStatement(insertBorrowSql)) {
-                insertStmt.setInt(1, borrow.getRecordId());
-                insertStmt.setInt(2, borrow.getStudentId());
-                insertStmt.setInt(3, borrow.getBookId());
-                insertStmt.setString(4, borrow.getBorrowDate());
-                insertStmt.setString(5, borrow.getReturnDate());
-                int borrowInserted = insertStmt.executeUpdate();
-
-                if (borrowInserted == 0) {
-                    conn.rollback();
-                    return false;
-                }
-            }
-
-            // 2. Giảm số lượng sách
-            try (PreparedStatement updateStmt = conn.prepareStatement(updateBookSql)) {
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
                 updateStmt.setInt(1, borrow.getBookId());
-                int bookUpdated = updateStmt.executeUpdate();
-
-                if (bookUpdated == 0) { // Không còn sách để mượn
+                if (updateStmt.executeUpdate() == 0) {
                     conn.rollback();
-                    return false;
+                    return null;
                 }
             }
 
-            // 3. Commit nếu cả hai bước thành công
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+                insertStmt.setInt(1, borrow.getStudentId());
+                insertStmt.setInt(2, borrow.getBookId());
+                insertStmt.setDate(3, Date.valueOf(LocalDate.now()));
+                insertStmt.executeUpdate();
+                
+                try (ResultSet rs = insertStmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        borrow.setRecordId(rs.getInt(1));
+                    }
+                }
+            }
+            
             conn.commit();
-            return true;
+            borrow.setBorrowDate(LocalDate.now().toString());
+            return borrow;
 
         } catch (SQLException e) {
+            if (conn != null) try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             e.printStackTrace();
-            return false;
-        }
-    }
-
-    /** 
-     * Xóa một bản ghi mượn sách 
-     * @param recordId ID của bản ghi mượn sách cần xóa
-     * @return true nếu xóa thành công, false nếu thất bại
-     */
-    public boolean deleteBorrowRecord(int recordId) {
-        String sql = "DELETE FROM borrows WHERE borrow_id = ?";
-        try (Connection conn = DatabaseConnector.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, recordId);
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
     /**
-     * Lấy một bản ghi mượn sách theo ID
-     * @param recordId ID của bản ghi mượn sách cần lấy
-     * @return đối tượng Borrow nếu tìm thấy, null nếu không tìm thấy
+     * THÊM HÀM MỚI: Logic trả sách hoàn chỉnh.
      */
+    public Borrow returnBook(int recordId) {
+        String findSql = "SELECT bookId FROM BorrowRecords WHERE recordId = ? AND returnDate IS NULL";
+        String updateBorrowSql = "UPDATE BorrowRecords SET returnDate = ? WHERE recordId = ?";
+        String updateBookSql = "UPDATE Books SET bookQuantity = bookQuantity + 1 WHERE bookID = ?";
+        Connection conn = null;
+
+        try {
+            conn = DatabaseConnector.getConnection();
+            conn.setAutoCommit(false);
+
+            int bookId = -1;
+            try (PreparedStatement findStmt = conn.prepareStatement(findSql)) {
+                findStmt.setInt(1, recordId);
+                ResultSet rs = findStmt.executeQuery();
+                if (rs.next()) {
+                    bookId = rs.getInt("bookId");
+                } else {
+                    conn.rollback();
+                    return null;
+                }
+            }
+            
+            try (PreparedStatement updateBookStmt = conn.prepareStatement(updateBookSql)) {
+                updateBookStmt.setInt(1, bookId);
+                updateBookStmt.executeUpdate();
+            }
+
+            try (PreparedStatement updateBorrowStmt = conn.prepareStatement(updateBorrowSql)) {
+                updateBorrowStmt.setDate(1, Date.valueOf(LocalDate.now()));
+                updateBorrowStmt.setInt(2, recordId);
+                updateBorrowStmt.executeUpdate();
+            }
+            
+            conn.commit();
+            return getBorrowRecordById(recordId);
+
+        } catch (SQLException e) {
+            if (conn != null) try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    // Sửa lại các hàm cũ cho đúng tên bảng/cột
     public Borrow getBorrowRecordById(int recordId) {
-        String sql = "SELECT * FROM borrows WHERE borrow_id = ?";
-        try (Connection conn = DatabaseConnector.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        String sql = "SELECT * FROM BorrowRecords WHERE recordId = ?"; // Sửa tên bảng và cột
+        try (Connection conn = DatabaseConnector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, recordId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new Borrow(
-                    rs.getInt("borrow_id"),
-                    rs.getInt("student_id"),
-                    rs.getInt("book_id"),
-                    rs.getString("borrow_date"),
-                    rs.getString("return_date")
-                );
+                Borrow b = new Borrow();
+                b.setRecordId(rs.getInt("recordId")); // Sửa tên cột
+                b.setStudentId(rs.getInt("studentId")); // Sửa tên cột
+                b.setBookId(rs.getInt("bookId")); // Sửa tên cột
+                b.setBorrowDate(rs.getString("borrowDate"));
+                b.setReturnDate(rs.getString("returnDate"));
+                return b;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
         return null;
     }
 
-    /**
-     * Chỉnh sửa một bản ghi dựa trên ID
-     * @param recordId ID của bản ghi cần chỉnh sửa
-     * @param updatedBorrow đối tượng Borrow chứa thông tin cập nhật
-     * @return true nếu cập nhật thành công, false nếu thất bại
-     */
     public boolean updateBorrowRecord(int recordId, Borrow updatedBorrow) {
-        String sql = "UPDATE borrows SET student_id = ?, book_id = ?, borrow_date = ?, return_date = ? WHERE borrow_id = ?";
-        try (Connection conn = DatabaseConnector.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        String sql = "UPDATE BorrowRecords SET studentId = ?, bookId = ?, borrowDate = ?, returnDate = ? WHERE recordId = ?";
+        try (Connection conn = DatabaseConnector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, updatedBorrow.getStudentId());
             pstmt.setInt(2, updatedBorrow.getBookId());
             pstmt.setString(3, updatedBorrow.getBorrowDate());
             pstmt.setString(4, updatedBorrow.getReturnDate());
             pstmt.setInt(5, recordId);
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
+    }
+    
+    public boolean deleteBorrowRecord(int recordId) {
+        String sql = "DELETE FROM BorrowRecords WHERE recordId = ?";
+        try (Connection conn = DatabaseConnector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, recordId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
     }
 }
