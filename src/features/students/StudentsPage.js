@@ -35,6 +35,9 @@ function StudentsPage() {
         <h3>Thêm sinh viên mới</h3>
         <StudentForm onSubmit={handleAddStudent} />
       </div>
+      <div className="card">
+        <h3>Chỉnh sửa thông tin sinh viên</h3>
+      </div>
     </div>
   );
 }

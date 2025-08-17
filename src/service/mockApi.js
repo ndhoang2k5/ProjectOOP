@@ -52,6 +52,11 @@ export const addBook = async (bookData) => {
   }
 };
 
+/**
+ * Hàm này sẽ xóa một cuốn sách theo ID.
+ * @param {*} bookId 
+ * @returns 
+ */
 export const deleteBook = async (bookId) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/books/${bookId}`);
