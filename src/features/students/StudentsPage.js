@@ -16,7 +16,7 @@ function StudentsPage() {
     if (!studentId) return;
     setError(''); setStatus(null);
     try { 
-      setStatus(await api.getStudentStatus(studentId)); 
+      setStatus(await api.getStudentById(studentId)); 
     } catch (err) { 
       setError(err.message); 
     }

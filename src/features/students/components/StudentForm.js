@@ -17,7 +17,7 @@ function StudentEditForm({ onUpdateSuccess }) {
     setMessage('');
     setStudentToEdit(null);
     try {
-      const result = await api.getStudentStatus(searchId);
+      const result = await api.getStudentById(searchId);
       if (result && result.student) {
         const foundStudent = result.student;
         setStudentToEdit(foundStudent);

@@ -76,16 +76,14 @@ export const deleteBook = async (bookId) => {
  * Tên hàm là `getStudentStatus` nhưng logic bên trong đã được sửa lại
  * để gọi thẳng đến API getStudentById của backend.
  */
-export const getStudentStatus = async (studentId) => {
+export const getStudentById = async (studentId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/students/${studentId}`);
     return {
       student: response.data,
-      activeBorrows: [] // Tạm thời vì chưa có API mượn sách
     };
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      // alert() đã bị loại bỏ, component sẽ tự xử lý thông báo
       console.warn(`Không tìm thấy sinh viên với mã: ${studentId}`);
       return null;
     }
@@ -105,7 +103,7 @@ export const addStudent = async (studentData) => {
       studentAge: parseInt(studentData.age, 10) || 0,
       studentEmail: studentData.email || null
     };
-    const response = await axios.post(`${API_BASE_URL}/students`, payload);
+    const response = await axios.post(`${API_BASE_URL}/students/add`, payload);
     return response.data; // Không có alert ở đây
   } catch (error) {
     handleError(error, "thêm sinh viên");
