@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import BorrowingForm from './components/BorrowingForm';
 import ReturnForm from './components/ReturnForm';
 import * as api from '../../service/mockApi';
+import FindBorrowForm from './components/FindBorrowForm';
+import BorrowRecordCard from './components/BorrowingRecordCard';
 
 // Component con để hiển thị kết quả (Giữ nguyên, đã đúng)
 function TransactionResult({ result }) {
@@ -42,6 +44,14 @@ function TransactionResult({ result }) {
 
 function BorrowingPage() {
   const [latestTransaction, setLatestTransaction] = useState(null);
+  const [message, setMessage] = useState({text: "", type: "info"});
+  const [foundRecord, setFoundRecord] = useState(null);
+  const [findError, setFindError] = useState('');
+
+  const showMessage = (text, type) => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: '', type: '' }), 5000);
+  };
 
   const handleCreateBorrow = async (studentId, bookId) => {
     setLatestTransaction(null); // Xóa kết quả cũ trước khi thực hiện hành động mới
@@ -70,11 +80,23 @@ function BorrowingPage() {
     }
   };
 
+  const handleFindBorrow = async (recordId) => {
+    setFoundRecord(null);
+    setFindError('');
+    try {
+      const result = await api.getBorrowRecordById(recordId);
+      setFoundRecord(result);
+    } catch (err) {
+      setFindError(err.message);
+    }
+  };
+
   return (
     <div>
       <h2 className="page-header">Quản lý Mượn/Trả sách</h2>
       
-      {latestTransaction && <TransactionResult result={latestTransaction} />}
+      {/* {latestTransaction && <TransactionResult result={latestTransaction} />} */}
+      {message.text && <p className={message.type}>{message.text}</p>}
       
       <div className="card">
         <h3>Tạo mượn sách</h3>
@@ -85,6 +107,11 @@ function BorrowingPage() {
         <h3>Kết thúc mượn sách (Trả sách)</h3>
         {/* SỬA LẠI PROP ĐỂ TRUYỀN VÀO HÀM MỚI */}
         <ReturnForm onSubmit={handleReturnBook} />
+      </div>
+      <div className="card">
+        <h3>Tìm phiếu mượn</h3>
+        <FindBorrowForm onSearch={handleFindBorrow}/>
+        <BorrowRecordCard record={foundRecord} error={findError}/>
       </div>
     </div>
   );
