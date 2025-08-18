@@ -1,85 +1,63 @@
-// src/features/students/components/StudentEditForm.js
 import React, { useState } from 'react';
 import Input from '../../../components/common/Input';
 import Button from '../../../components/common/Button';
-// GIẢ SỬ: File gọi API thực tế của bạn là 'apiService.js' chứ không phải mockApi
-//import * as api from '../../../service/apiService';
 import * as api from '../../../service/mockApi';
 
-// CẢI TIẾN: Thêm prop 'onUpdateSuccess' để thông báo cho component cha khi cập nhật thành công
+// SỬA LẠI: Thêm prop onUpdateSuccess
 function StudentEditForm({ onUpdateSuccess }) {
   const [searchId, setSearchId] = useState('');
-  const [studentToEdit, setStudentToEdit] = useState(null); // Lưu thông tin SV tìm được
-  const [formData, setFormData] = useState({ name: '', age: '', email: '' }); // Lưu dữ liệu đang sửa trên form
-  const [message, setMessage] = useState(''); // Hiển thị thông báo (lỗi, thành công)
+  const [studentToEdit, setStudentToEdit] = useState(null);
+  const [formData, setFormData] = useState({ name: '', age: '', email: '' });
+  const [message, setMessage] = useState('');
 
-  // Hàm xử lý khi người dùng nhấn nút "Tìm để sửa"
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchId) return;
-
     setMessage('');
     setStudentToEdit(null);
-
     try {
-      // SỬA LỖI 1: Gọi hàm API và nhận trực tiếp đối tượng student
-      // Backend trả về: { studentId: 1, studentName: 'A' }
-      // Chứ không phải: { student: { studentId: 1, ... } }
-      const foundStudent = await api.getStudentById(searchId);
-      
-      if (foundStudent) {
+      const result = await api.getStudentById(searchId);
+      if (result && result.student) {
+        const foundStudent = result.student;
         setStudentToEdit(foundStudent);
-        // Điền thông tin tìm được vào form
         setFormData({
           name: foundStudent.studentName,
           age: foundStudent.studentAge,
           email: foundStudent.studentEmail,
         });
-      }
-      // Không cần else ở đây, vì nếu không tìm thấy, API sẽ ném lỗi 404 và nhảy vào catch
-    } catch (err) {
-      // SỬA LỖI 3: Cải thiện xử lý lỗi
-      if (err.response && err.response.status === 404) {
-        setMessage(`Không tìm thấy sinh viên với mã: ${searchId}`);
       } else {
-        const errorMessage = err.response?.data?.error || err.message;
-        setMessage(`Đã xảy ra lỗi khi tìm kiếm: ${errorMessage}`);
+        setMessage(`Không tìm thấy sinh viên với mã: ${searchId}`);
       }
+    } catch (err) {
+       // SỬA LẠI: Hiển thị lỗi cụ thể hơn từ backend
+      const errorMessage = err.response?.data?.error || err.message;
+      setMessage(`Lỗi khi tìm kiếm: ${errorMessage}`);
     }
   };
 
-  // Cập nhật state của form khi người dùng nhập liệu
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Hàm xử lý khi người dùng nhấn "Lưu thay đổi"
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!studentToEdit) return;
-
-    // SỬA LỖI 2: Tạo đối tượng payload với các key khớp với backend
-    const studentDataToUpdate = {
-      studentName: formData.name,
-      studentAge: parseInt(formData.age, 10), // Đảm bảo tuổi là kiểu số
-      studentEmail: formData.email,
-    };
-
     try {
-      await api.updateStudent(studentToEdit.studentId, studentDataToUpdate);
+      await api.updateStudent(studentToEdit.studentId, formData);
       setMessage('Cập nhật thông tin sinh viên thành công!');
       
-      // CẢI TIẾN: Gọi hàm callback của component cha (nếu có)
+      // THÊM MỚI: Gọi hàm callback của component cha để báo hiệu cập nhật thành công
+      // và truyền ID của sinh viên vừa được cập nhật.
       if (onUpdateSuccess) {
         onUpdateSuccess(studentToEdit.studentId);
       }
 
-      // CẢI TIẾN 4: Reset form sau một khoảng trễ để người dùng đọc được thông báo
+      // Reset form sau một khoảng trễ để người dùng đọc được thông báo
       setTimeout(() => {
         setStudentToEdit(null);
         setSearchId('');
         setMessage('');
-      }, 2000); // 2 giây
+      }, 2000);
 
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.message;
@@ -87,6 +65,7 @@ function StudentEditForm({ onUpdateSuccess }) {
     }
   };
 
+  // ... (phần return JSX giữ nguyên y hệt) ...
   return (
     <div>
       {/* --- FORM TÌM KIẾM SINH VIÊN ĐỂ SỬA --- */}

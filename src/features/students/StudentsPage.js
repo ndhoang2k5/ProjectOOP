@@ -14,7 +14,8 @@ function StudentsPage() {
 
   const handleSearch = async (studentId) => {
     if (!studentId) return;
-    setError(''); setStatus(null);
+    setError(''); 
+    setStatus(null);
     try { 
       setStatus(await api.getStudentById(studentId)); 
     } catch (err) { 

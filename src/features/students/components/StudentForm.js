@@ -1,125 +1,62 @@
-// src/features/students/components/StudentEditForm.js
 import React, { useState } from 'react';
 import Input from '../../../components/common/Input';
 import Button from '../../../components/common/Button';
-import * as api from '../../../service/mockApi';
 
-// SỬA LẠI: Thêm prop onUpdateSuccess
-function StudentEditForm({ onUpdateSuccess }) {
-  const [searchId, setSearchId] = useState('');
-  const [studentToEdit, setStudentToEdit] = useState(null);
-  const [formData, setFormData] = useState({ name: '', age: '', email: '' });
-  const [message, setMessage] = useState('');
+function StudentForm({ onSubmit }) {
+  // 1. Cập nhật trạng thái ban đầu để bao gồm age và email
+  const initialData = { name: '', studentId: '', age: '', email: '' };
+  const [student, setStudent] = useState(initialData);
 
-  const handleSearch = async (e) => {
+  // Hàm handleChange không cần thay đổi, nó hoạt động với mọi trường nhập liệu
+  const handleChange = (e) => setStudent({ ...student, [e.target.name]: e.target.value });
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!searchId) return;
-    setMessage('');
-    setStudentToEdit(null);
-    try {
-      const result = await api.getStudentById(searchId);
-      if (result && result.student) {
-        const foundStudent = result.student;
-        setStudentToEdit(foundStudent);
-        setFormData({
-          name: foundStudent.studentName,
-          age: foundStudent.studentAge,
-          email: foundStudent.studentEmail,
-        });
-      } else {
-        setMessage(`Không tìm thấy sinh viên với mã: ${searchId}`);
-      }
-    } catch (err) {
-       // SỬA LẠI: Hiển thị lỗi cụ thể hơn từ backend
-      const errorMessage = err.response?.data?.error || err.message;
-      setMessage(`Lỗi khi tìm kiếm: ${errorMessage}`);
-    }
+    // Khi submit, đối tượng student giờ đã có cả age và email
+    onSubmit(student);
+    setStudent(initialData); // Reset tất cả các trường
   };
 
-  const handleFormChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    if (!studentToEdit) return;
-    try {
-      await api.updateStudent(studentToEdit.studentId, formData);
-      setMessage('Cập nhật thông tin sinh viên thành công!');
-      
-      // THÊM MỚI: Gọi hàm callback của component cha để báo hiệu cập nhật thành công
-      // và truyền ID của sinh viên vừa được cập nhật.
-      if (onUpdateSuccess) {
-        onUpdateSuccess(studentToEdit.studentId);
-      }
-
-      // Reset form sau một khoảng trễ để người dùng đọc được thông báo
-      setTimeout(() => {
-        setStudentToEdit(null);
-        setSearchId('');
-        setMessage('');
-      }, 2000);
-
-    } catch (err) {
-      const errorMessage = err.response?.data?.error || err.message;
-      setMessage(`Lỗi khi cập nhật: ${errorMessage}`);
-    }
-  };
-
-  // ... (phần return JSX giữ nguyên y hệt) ...
   return (
-    <div>
-      {/* --- FORM TÌM KIẾM SINH VIÊN ĐỂ SỬA --- */}
-      <form onSubmit={handleSearch}>
-        <div className="form-group">
-          <Input
-            placeholder="Nhập mã sinh viên cần sửa"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-          />
-          <Button type="submit">Tìm để sửa</Button>
-        </div>
-      </form>
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <Input 
+          name="name" 
+          value={student.name} 
+          onChange={handleChange} 
+          placeholder="Họ và tên" 
+          required 
+        />
+        <Input
+          name ="studentId"
+          value={student.studentId}
+          onChange={handleChange}
+          placeholder="Mã sinh viên"
+          required
+        />
 
-      {/* Hiển thị thông báo nếu có */}
-      {message && <p style={{ marginTop: '10px' }}>{message}</p>}
-
-      {/* --- FORM SỬA THÔNG TIN (chỉ hiện khi đã tìm thấy sinh viên) --- */}
-      {studentToEdit && (
-        <form onSubmit={handleUpdate} style={{ marginTop: '20px', borderTop: '1px solid #eee', paddingTop: '20px' }}>
-          <h4>
-            Đang sửa thông tin cho: <strong>{studentToEdit.studentName}</strong> (Mã SV: {studentToEdit.studentId})
-          </h4>
-          <div className="form-group">
-            <Input
-              name="name"
-              value={formData.name}
-              onChange={handleFormChange}
-              placeholder="Họ và tên"
-              required
-            />
-            <Input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleFormChange}
-              placeholder="Tuổi"
-              required
-            />
-            <Input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleFormChange}
-              placeholder="Email"
-              required
-            />
-          </div>
-          <Button type="submit">Lưu thay đổi</Button>
-        </form>
-      )}
-    </div>
+        {/* 2. Thêm trường nhập liệu cho Tuổi */}
+        <Input 
+          type="number" 
+          name="age" 
+          value={student.age} 
+          onChange={handleChange} 
+          placeholder="Tuổi"
+          required 
+        />
+        {/* 3. Thêm trường nhập liệu cho Email */}
+        <Input 
+          type="email" 
+          name="email" 
+          value={student.email} 
+          onChange={handleChange} 
+          placeholder="Email" 
+          required
+        />
+      </div>
+      <Button type="submit">Thêm sinh viên</Button>
+    </form>
   );
 }
 
-export default StudentEditForm;
+export default StudentForm;
