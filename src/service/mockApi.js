@@ -103,7 +103,7 @@ export const addStudent = async (studentData) => {
       studentAge: parseInt(studentData.age, 10) || 0,
       studentEmail: studentData.email || null
     };
-    const response = await axios.post(`${API_BASE_URL}/students/add`, payload);
+    const response = await axios.post(`${API_BASE_URL}/students`, payload);
     return response.data; // Không có alert ở đây
   } catch (error) {
     handleError(error, "thêm sinh viên");
