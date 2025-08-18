@@ -55,9 +55,9 @@ public class BookApi {
 
         boolean isDeleted = bookService.deleteBook(bookId);
         if (isDeleted) {
-            ctx.status(204).result("Book deleted successfully");
+            ctx.status(204).result("Xóa sách thành công!");
         } else {
-            ctx.status(404).result("Book not found");
+            ctx.status(404).result("Không có sách!");
         }
     };
 
@@ -70,7 +70,7 @@ public class BookApi {
         List<Book> books = bookService.getAllBooks();
 
         if (books.isEmpty()) {
-            ctx.status(404).result("No books found");
+            ctx.status(404).result("Không tìm thấy sách");
         } else {
             ctx.json(books);
         }
