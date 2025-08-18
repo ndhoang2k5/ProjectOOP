@@ -29,7 +29,7 @@ Từ lần thứ 2 chạy chương trình bạn chỉ cần chạy lệnh
 
 ```bash
     npm run start
-```bash
+```
 
 Bước 4: Khi khởi động hoàn tất, bạn đã có thể sử dụng ứng dụng.
 
