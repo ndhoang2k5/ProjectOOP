@@ -86,7 +86,7 @@ public class BookApi {
         BookService bookService = new BookService();
         List<Book> books = bookService.findBookByName(bookName);
         if (books.isEmpty()) {
-            ctx.status(404).result("No books found with the name: " + bookName);
+            ctx.status(404).result("Không tìm thấy: " + bookName);
         } else {
             ctx.json(books);
         }
