@@ -4,7 +4,7 @@ function Table({ columns, data, loading }) {
   if (loading) return <p>Đang tải dữ liệu...</p>;
 
 
-  if (!data || data.length === 0) return <p>Không có dữ liệu để hiển thị.</p>;
+  if (!data || data.length === 0) return <p>Trong kho không có sách này.</p>;
 
   return (
     <table>
