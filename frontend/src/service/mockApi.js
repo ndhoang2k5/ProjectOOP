@@ -152,6 +152,16 @@ export const createBorrowing = async (studentId, bookId) => {
   }
 };
 
+
+export const getBorrowRecordById = async (recordId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/borrows/${recordId}`);
+    return response.data;
+  } catch (error) {
+    handleError(error, `tìm phiếu mượn ID ${recordId}`)
+  }
+};
+
 export const returnBook = async (borrowingId) => {
   try {
     // URL chuẩn: PUT /borrows/{id}/return
