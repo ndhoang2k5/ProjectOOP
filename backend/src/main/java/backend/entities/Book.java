@@ -48,4 +48,11 @@ public class Book {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+    public void display() {
+        System.out.println("Book ID: " + bookId);
+        System.out.println("Book Name: " + bookName);
+        System.out.println("Author: " + author);
+        System.out.println("Quantity: " + bookQuantity);
+    }
 }
