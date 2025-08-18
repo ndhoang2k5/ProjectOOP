@@ -10,8 +10,11 @@ function BookForm({ onSubmit }) {
 
   const handleChange = (e) => setBook({ ...book, [e.target.name]: e.target.value });
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+
     // Chuyển đổi cả bookId và bookQuantity thành số nguyên trước khi gửi đi
     onSubmit({
       ...book,
