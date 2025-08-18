@@ -46,7 +46,7 @@ public class DatabaseConnector {
         app.delete("/students/{studentId}", StudentApi.deleteStudent);
         app.get("/students/search/{name}", StudentApi.searchStudentByName);
 
-        // === API MƯỢN/TRẢ SÁCH (CHUẨN) ===
+        // API Mượn sách
         app.get("/borrows/{recordId}", BorrowApi.getBorrowRecordById);
         app.post("/borrows", BorrowApi.createBorrowRecord);
         app.put("/borrows/{recordId}/return", BorrowApi.returnBook);
