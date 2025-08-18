@@ -1,0 +1,22 @@
+.card-result {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.card-result.success {
+  background-color: #e8f5e9; /* Màu xanh lá nhạt */
+  border-color: #4caf50;
+  color: #2e7d32;
+}
+
+.card-result.error {
+  background-color: #ffebee; /* Màu đỏ nhạt */
+  border-color: #f44336;
+  color: #c62828;
+}
+
+.card-result h4 {
+  margin-top: 0;
+}
