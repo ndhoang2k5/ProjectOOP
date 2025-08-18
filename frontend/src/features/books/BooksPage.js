@@ -17,6 +17,7 @@ function BooksPage() {
   const [allBooks, setAllBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
+
   useEffect(() => {
     const fetchAllBooks = async () => {
       setLoading(true);
@@ -33,6 +34,15 @@ function BooksPage() {
   }, []);
 
   const handleAddBook = async (bookData) => {
+
+    if (!bookData.bookId || 
+        !bookData.bookName.trim() || 
+        !bookData.author.trim() || 
+        bookData.bookQuantity === " "
+      ) {
+        alert("Yêu cầu nhập đầy đủ thông tin");
+        return;
+      }
     setLoading(true);
     try {
       await api.addBook(bookData);
