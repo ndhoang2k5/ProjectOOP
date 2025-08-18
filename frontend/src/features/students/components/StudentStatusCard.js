@@ -11,7 +11,7 @@ function StudentStatusCard({ status, error }) {
       {}
       <h4>Thông tin sinh viên</h4>
       {status.student ? (
-        <p><strong>Mã SV:</strong> {status.student.studentId} - <strong>Tên:</strong> {status.student.studentName}</p>
+        <p><strong>Mã SV:</strong> {status.student.studentId} - <strong>Tên:</strong> {status.student.studentName} - <strong>Email:</strong> {status.student.studentEmail}</p>
       ) : (
         <p>Không có thông tin sinh viên.</p>
       )}
@@ -24,7 +24,7 @@ function StudentStatusCard({ status, error }) {
             <li key={b.id}>ID Mượn: {b.id} - Sách: "{b.bookTitle}" (Ngày mượn: {b.borrowDate})</li>
           ))}
         </ul>
-      ) : <p>Không có sách nào đang mượn.</p>}
+      ) : <p></p>}
     </div>
   );
 }
