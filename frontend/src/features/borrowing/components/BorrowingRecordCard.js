@@ -9,7 +9,7 @@ function BorrowRecordCard({ record, error }) {
             <h4>Kết quả tìm kiếm:</h4>
             <p><strong>ID Phiếu mượn:</strong> {record.recordId}</p>
             <p><strong>Tên sách:</strong> {record.bookName}</p>
-            <p><strong>Sinh viên mượn:</strong> {record.studentName} (Mã SV: {record.studentCode})</p>
+            <p><strong>Sinh viên mượn:</strong> {record.studentName} (Mã SV: {record.studentId})</p>
             <p><strong>Ngày mượn:</strong> {record.borrowDate}</p>
             <p><strong>Ngày trả:</strong> {record.returnDate || 'Chưa trả'}</p>
         </div>
