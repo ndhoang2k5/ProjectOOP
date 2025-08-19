@@ -1,10 +1,17 @@
 // src/main/java/backend/service/BorrowService.java
 package backend.service;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+
 import backend.driver.DatabaseConnector;
 import backend.entities.Borrow;
-import java.sql.*;
-import java.time.LocalDate;
+import backend.entities.GetBorrow;
 
 public class BorrowService {
 
@@ -103,24 +110,42 @@ public class BorrowService {
     }
     
     // Sửa lại các hàm cũ cho đúng tên bảng/cột
-    public Borrow getBorrowRecordById(int recordId) {
-        String sql = "SELECT * FROM BorrowRecords WHERE recordId = ?"; // Sửa tên bảng và cột
-        try (Connection conn = DatabaseConnector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    public GetBorrow getBorrowRecordById(int recordId) {
+        String sql = "SELECT " +
+                        "br.recordId, " +
+                        "b.bookID, " +
+                        "b.bookName, " +
+                        "s.studentID, " +
+                        "s.studentName, " +
+                        "br.borrowDate, " +
+                        "br.returnDate " +
+                    "FROM BorrowRecords br " +
+                    "JOIN Books b ON br.bookId = b.bookID " +
+                    "JOIN Students s ON br.studentId = s.studentID " +
+                    "WHERE br.recordId = ?";
+
+        try (Connection conn = DatabaseConnector.getConnection(); 
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
             pstmt.setInt(1, recordId);
             ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
-                Borrow b = new Borrow();
-                b.setRecordId(rs.getInt("recordId")); // Sửa tên cột
-                b.setStudentId(rs.getInt("studentId")); // Sửa tên cột
-                b.setBookId(rs.getInt("bookId")); // Sửa tên cột
+                GetBorrow b = new GetBorrow();   // ✅ đổi Borrow thành GetBorrow
+                b.setRecordId(rs.getInt("recordId"));
+                b.setBookId(rs.getInt("bookID"));
+                b.setBookName(rs.getString("bookName"));      // OK
+                b.setStudentId(rs.getInt("studentID"));
+                b.setStudentName(rs.getString("studentName"));// OK
                 b.setBorrowDate(rs.getString("borrowDate"));
                 b.setReturnDate(rs.getString("returnDate"));
                 return b;
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
-
     public boolean updateBorrowRecord(int recordId, Borrow updatedBorrow) {
         String sql = "UPDATE BorrowRecords SET studentId = ?, bookId = ?, borrowDate = ?, returnDate = ? WHERE recordId = ?";
         try (Connection conn = DatabaseConnector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
