@@ -53,19 +53,18 @@ function BorrowingPage() {
     setTimeout(() => setMessage({ text: '', type: '' }), 5000);
   };
 
-  const handleCreateBorrow = async (studentId, bookId) => {
-    setLatestTransaction(null); // Xóa kết quả cũ trước khi thực hiện hành động mới
-    try {
-      const resultData = await api.createBorrowing(studentId, bookId);
-      setLatestTransaction({ type: 'borrow', data: resultData });
-    } 
-    catch (err) {
-      // handleError trong mockApi đã throw error, ta bắt nó ở đây
-      // err.response.data chứa object { "error": "message" } từ backend
-      const message = err.response?.data?.error || err.message;
-      setLatestTransaction({ type: 'error', message: message });
-    }
-  };
+const handleCreateBorrow = async (studentId, bookId) => {
+  setLatestTransaction(null);
+  try {
+    const resultData = await api.createBorrowing(studentId, bookId);
+    setLatestTransaction({ type: 'borrow', data: resultData });
+    showMessage("Tạo phiếu mượn thành công!", "success");
+  } catch (err) {
+    const message = err.response?.data?.error || err.message;
+    setLatestTransaction({ type: 'error', message: message });
+    showMessage("Lỗi khi tạo phiếu mượn: " + message, "error");
+  }
+};
 
   // SỬA LẠI TÊN HÀM CHO NHẤT QUÁN VÀ SỬA LOGIC BÁO LỖI
   const handleReturnBook = async (borrowingId) => {
@@ -95,7 +94,7 @@ function BorrowingPage() {
     <div>
       <h2 className="page-header">Quản lý Mượn/Trả sách</h2>
       
-      {/* {latestTransaction && <TransactionResult result={latestTransaction} />} */}
+      {latestTransaction && <TransactionResult result={latestTransaction} />}
       {message.text && <p className={message.type}>{message.text}</p>}
       
       <div className="card">
