@@ -12,7 +12,7 @@ import io.javalin.Javalin;
 public class DatabaseConnector {
     private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/lib?useSSL=false&serverTimezone=UTC";
     private static final String JDBC_USER = "root";
-    private static final String JDBC_PASSWORD = "1109"; // Đảm bảo mật khẩu này đúng
+    private static final String JDBC_PASSWORD = "ngocnam2005"; // Đảm bảo mật khẩu này đúng
 
     static {
         try {
