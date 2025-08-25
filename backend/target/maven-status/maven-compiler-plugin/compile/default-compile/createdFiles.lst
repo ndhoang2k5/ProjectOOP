@@ -1,11 +1,11 @@
 backend\Main.class
-backend\api\BorrowApi.class
 backend\entities\Borrow.class
 backend\api\StudentApi.class
-backend\service\BookService.class
-backend\service\StudentService.class
-backend\api\BookApi.class
 backend\entities\Student.class
 backend\service\BorrowService.class
 backend\entities\Book.class
+backend\api\BorrowApi.class
+backend\service\BookService.class
+backend\service\StudentService.class
+backend\api\BookApi.class
 backend\driver\DatabaseConnector.class
